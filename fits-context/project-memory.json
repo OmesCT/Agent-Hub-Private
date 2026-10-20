@@ -1,0 +1,456 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1791341551861,
+  "projectRoot": "/Users/chinnawat.t/workspace/FITs",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "docs",
+      "scripts",
+      "tests"
+    ],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "_bmad": {
+      "path": "_bmad",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1791341551570,
+      "keyFiles": [
+        "config.toml",
+        "config.user.toml"
+      ]
+    },
+    "_bmad-output": {
+      "path": "_bmad-output",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1791341551571,
+      "keyFiles": []
+    },
+    "backend": {
+      "path": "backend",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1791341551572,
+      "keyFiles": [
+        "Fits.sln"
+      ]
+    },
+    "database": {
+      "path": "database",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1791341551573,
+      "keyFiles": []
+    },
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 16,
+      "lastAccessed": 1791341551574,
+      "keyFiles": [
+        "AAA_SYSTEM_DEVELOPER_GUIDE.md",
+        "AGENTS.md",
+        "CLASS_DIAGRAM.md",
+        "DBOPS_DESIGN.md",
+        "DB_INITIALIZATION.md"
+      ]
+    },
+    "frontend": {
+      "path": "frontend",
+      "purpose": null,
+      "fileCount": 16,
+      "lastAccessed": 1791341551574,
+      "keyFiles": [
+        "18-resolve-backend.envsh",
+        "25-worker-processes.sh",
+        "Dockerfile",
+        "README.md",
+        "index.html"
+      ]
+    },
+    "scripts": {
+      "path": "scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 8,
+      "lastAccessed": 1791341551575,
+      "keyFiles": [
+        "capture_screenshots.py",
+        "demo-seed.sh",
+        "e2e-playwright-verify.py",
+        "e2e-seed.sh",
+        "generate_pdfs.py"
+      ]
+    },
+    "tests": {
+      "path": "tests",
+      "purpose": "Test files",
+      "fileCount": 2,
+      "lastAccessed": 1791341551577,
+      "keyFiles": [
+        "test-compose-pod.sh",
+        "test-release-version.sh"
+      ]
+    },
+    "_bmad/scripts": {
+      "path": "_bmad/scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 9,
+      "lastAccessed": 1791341551578,
+      "keyFiles": [
+        "config_utils.py",
+        "knowledge.py",
+        "memlog.py"
+      ]
+    },
+    "database/seeds": {
+      "path": "database/seeds",
+      "purpose": "Database seeds",
+      "fileCount": 1,
+      "lastAccessed": 1791341551582,
+      "keyFiles": [
+        "development-users.json"
+      ]
+    },
+    "frontend/dist": {
+      "path": "frontend/dist",
+      "purpose": "Distribution/build output",
+      "fileCount": 4,
+      "lastAccessed": 1791341551584,
+      "keyFiles": [
+        "favicon.svg",
+        "icons.svg",
+        "index.html"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "frontend/src/shell/FitsShell.tsx",
+      "accessCount": 46,
+      "lastAccessed": 1791193034717,
+      "type": "file"
+    },
+    {
+      "path": "frontend/src/api/client.ts",
+      "accessCount": 25,
+      "lastAccessed": 1791184992306,
+      "type": "file"
+    },
+    {
+      "path": "frontend/src/shell/ApprovalsQueueView.tsx",
+      "accessCount": 16,
+      "lastAccessed": 1791188663668,
+      "type": "file"
+    },
+    {
+      "path": "backend/Fits.Api/Program.cs",
+      "accessCount": 16,
+      "lastAccessed": 1791202070078,
+      "type": "file"
+    },
+    {
+      "path": "backend/Fits.Api/Dockerfile",
+      "accessCount": 12,
+      "lastAccessed": 1791178995900,
+      "type": "file"
+    },
+    {
+      "path": "frontend/src/shell/ItemsRegisterView.tsx",
+      "accessCount": 9,
+      "lastAccessed": 1791022807341,
+      "type": "file"
+    },
+    {
+      "path": "frontend/src/shell/SendBackReasonModal.tsx",
+      "accessCount": 8,
+      "lastAccessed": 1791188666610,
+      "type": "file"
+    },
+    {
+      "path": "frontend/src/api/realtime.ts",
+      "accessCount": 7,
+      "lastAccessed": 1791022899329,
+      "type": "file"
+    },
+    {
+      "path": "frontend/src/api/portfolio.ts",
+      "accessCount": 6,
+      "lastAccessed": 1790931180905,
+      "type": "file"
+    },
+    {
+      "path": "docker-compose.yml",
+      "accessCount": 6,
+      "lastAccessed": 1791021304493,
+      "type": "file"
+    },
+    {
+      "path": "frontend/src/shell/viewMeta.ts",
+      "accessCount": 6,
+      "lastAccessed": 1791188655920,
+      "type": "file"
+    },
+    {
+      "path": "scripts/release.sh",
+      "accessCount": 5,
+      "lastAccessed": 1790861033372,
+      "type": "file"
+    },
+    {
+      "path": "frontend/Dockerfile",
+      "accessCount": 5,
+      "lastAccessed": 1791198921761,
+      "type": "file"
+    },
+    {
+      "path": "docs/DEPLOY_ON_PREM.md",
+      "accessCount": 5,
+      "lastAccessed": 1791199089211,
+      "type": "file"
+    },
+    {
+      "path": ".claude/skills/bmad-review/references/lens-adversarial.md",
+      "accessCount": 4,
+      "lastAccessed": 1790853131447,
+      "type": "file"
+    },
+    {
+      "path": "docs/GIT_WORKFLOW_BMAD.md",
+      "accessCount": 4,
+      "lastAccessed": 1790860899799,
+      "type": "file"
+    },
+    {
+      "path": "backend/Fits.Api/Controllers/BudgetItemsController.cs",
+      "accessCount": 4,
+      "lastAccessed": 1791189475121,
+      "type": "file"
+    },
+    {
+      "path": "backend/Fits.Api/appsettings.json",
+      "accessCount": 4,
+      "lastAccessed": 1791198936740,
+      "type": "file"
+    },
+    {
+      "path": "tests/test-release-version.sh",
+      "accessCount": 3,
+      "lastAccessed": 1790861019648,
+      "type": "file"
+    },
+    {
+      "path": "backend/Fits.Api/Services/PortfolioService.cs",
+      "accessCount": 3,
+      "lastAccessed": 1790921289886,
+      "type": "file"
+    },
+    {
+      "path": "frontend/src/pages/Portfolio/DashboardAnalytics.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1790927103541,
+      "type": "file"
+    },
+    {
+      "path": "backend/Fits.Api/Models/BudgetItemDtos.cs",
+      "accessCount": 3,
+      "lastAccessed": 1791188629955,
+      "type": "file"
+    },
+    {
+      "path": ".claude/skills/bmad-review/references/lens-edge-case-hunter.md",
+      "accessCount": 2,
+      "lastAccessed": 1790848716032,
+      "type": "file"
+    },
+    {
+      "path": ".claude/skills/bmad-review/references/lens-verification-gap.md",
+      "accessCount": 2,
+      "lastAccessed": 1790848716788,
+      "type": "file"
+    },
+    {
+      "path": "backend/Fits.Tests/Dockerfile",
+      "accessCount": 2,
+      "lastAccessed": 1790853168590,
+      "type": "file"
+    },
+    {
+      "path": "_bmad-output/initiative-fits/epic-budget-request-creation-bgid-core-intake-grid/story-role-gated-budget-item-drafting-with-deterministic-bgid-generation-plan.md",
+      "accessCount": 2,
+      "lastAccessed": 1790858662426,
+      "type": "file"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/review-prompt-edge-case-hunter.md",
+      "accessCount": 2,
+      "lastAccessed": 1790858676289,
+      "type": "file"
+    },
+    {
+      "path": "AGENTS.md",
+      "accessCount": 2,
+      "lastAccessed": 1790860899204,
+      "type": "file"
+    },
+    {
+      "path": "backend/Fits.Api/.dockerignore",
+      "accessCount": 2,
+      "lastAccessed": 1790861919301,
+      "type": "file"
+    },
+    {
+      "path": "_bmad-output/specs/spec-openshift-deployment/SPEC.md",
+      "accessCount": 2,
+      "lastAccessed": 1790873277355,
+      "type": "file"
+    },
+    {
+      "path": "frontend/18-resolve-backend.envsh",
+      "accessCount": 2,
+      "lastAccessed": 1790875514262,
+      "type": "file"
+    },
+    {
+      "path": "backend/Fits.Api/Controllers/PortfolioController.cs",
+      "accessCount": 2,
+      "lastAccessed": 1791188626621,
+      "type": "file"
+    },
+    {
+      "path": ".claude/skills/bmad-review/SKILL.md",
+      "accessCount": 1,
+      "lastAccessed": 1790849235818,
+      "type": "file"
+    },
+    {
+      "path": "backend/.dockerignore",
+      "accessCount": 1,
+      "lastAccessed": 1790853168999,
+      "type": "file"
+    },
+    {
+      "path": "frontend/.dockerignore",
+      "accessCount": 1,
+      "lastAccessed": 1790853169381,
+      "type": "file"
+    },
+    {
+      "path": "backend/Fits.Api/Fits.Api.csproj",
+      "accessCount": 1,
+      "lastAccessed": 1790853376917,
+      "type": "file"
+    },
+    {
+      "path": "scripts/demo-seed.sh",
+      "accessCount": 1,
+      "lastAccessed": 1790853399287,
+      "type": "file"
+    },
+    {
+      "path": "scripts/e2e-seed.sh",
+      "accessCount": 1,
+      "lastAccessed": 1790853399659,
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "accessCount": 1,
+      "lastAccessed": 1790853416201,
+      "type": "file"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/review-prompt-intent-alignment.md",
+      "accessCount": 1,
+      "lastAccessed": 1790858676725,
+      "type": "file"
+    },
+    {
+      "path": "_bmad-output/initiative-fits/tickets.toml",
+      "accessCount": 1,
+      "lastAccessed": 1790860924186,
+      "type": "file"
+    },
+    {
+      "path": ".claude/skills/bmad-qa-generate-e2e-tests/SKILL.md",
+      "accessCount": 1,
+      "lastAccessed": 1790861025032,
+      "type": "file"
+    },
+    {
+      "path": "_bmad-output/implementation-artifacts/tests/test-summary.md",
+      "accessCount": 1,
+      "lastAccessed": 1790861142817,
+      "type": "file"
+    },
+    {
+      "path": "_bmad-output/specs/spec-openshift-deployment/brownfield.md",
+      "accessCount": 1,
+      "lastAccessed": 1790873273346,
+      "type": "file"
+    },
+    {
+      "path": "backend/Fits.Tests/Integration/AaaProviderStartupTests.cs",
+      "accessCount": 1,
+      "lastAccessed": 1790917009388,
+      "type": "file"
+    },
+    {
+      "path": "frontend/src/__bugverify__/known-K41.test.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1790920443868,
+      "type": "file"
+    },
+    {
+      "path": "frontend/src/__bugverify__/known-K42.test.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1790920452989,
+      "type": "file"
+    },
+    {
+      "path": "frontend/src/__bugverify__/known-K44.test.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1790920457077,
+      "type": "file"
+    },
+    {
+      "path": "backend/Fits.Api/Models/PortfolioDtos.cs",
+      "accessCount": 1,
+      "lastAccessed": 1790920509309,
+      "type": "file"
+    },
+    {
+      "path": "frontend/src/i18n/shellStrings.ts",
+      "accessCount": 1,
+      "lastAccessed": 1790920514242,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

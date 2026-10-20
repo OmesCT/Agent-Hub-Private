@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "3a34301f-16c9-4f8e-a798-af5dd61924e9",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "/Users/chinnawat.t/workspace/Agent-Learning/.archify/architecture-fits-system-overview-20261012-141800/candidate.json",
+  "output": "/Users/chinnawat.t/workspace/Agent-Learning/.archify/architecture-fits-system-overview-20261012-141800/fits-architecture.html",
+  "specification": {
+    "sha256": "20ba18bf5d7105411c0e65c94258ae0ffc5589c52cf5af6fa7516965b1571d81",
+    "bytes": 6981
+  },
+  "artifact": {
+    "sha256": "d2b82575d66b13cde839f49a5b41c5b36d81d67cd7f7f68f23d6794dbe4c6b17",
+    "bytes": 769390
+  }
+}

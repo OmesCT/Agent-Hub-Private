@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Activity Log, งานที่ได้รับมอบหมาย, ผลการปฏิบัติงาน และปัญหา/การแก้ไขรายสัปดาห์ (29 มิ.ย. - 19 ต.ค. 2026)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --primary: #1e3a8a;
+      --primary-light: #eff6ff;
+      --assign-title: #334155;
+      --outcome-title: #1e40af;
+      --issue-title: #92400e;
+      --fix-title: #166534;
+      --tag-mft-bg: #dbeafe;
+      --tag-mft-text: #1e40af;
+      --tag-k8s-bg: #e0e7ff;
+      --tag-k8s-text: #3730a3;
+      --tag-ocp-bg: #dcfce7;
+      --tag-ocp-text: #166534;
+      --tag-fits-bg: #fef3c7;
+      --tag-fits-text: #92400e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans Thai', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 28px 20px;
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 26px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      font-size: 1.32rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    header p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    button.btn {
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    button.btn:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    button.btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    button.btn-primary:hover {
+      background: #172554;
+    }
+
+    .section-title {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .project-card h2 {
+      font-size: 0.94rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .project-card p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .project-outcomes {
+      list-style: disc;
+      padding-left: 18px;
+      font-size: 0.79rem;
+      color: var(--text);
+    }
+
+    .project-outcomes li {
+      margin-bottom: 3px;
+    }
+
+    .toolbar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .filter-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-right: 2px;
+    }
+
+    .pill {
+      font-family: inherit;
+      font-size: 0.79rem;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .pill.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .search-input {
+      font-family: inherit;
+      font-size: 0.84rem;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      min-width: 240px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+    }
+
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    thead th {
+      background: #f1f5f9;
+      color: var(--text);
+      font-size: 0.81rem;
+      font-weight: 600;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr.day-row:hover {
+      background: #f8fafc;
+    }
+
+    tbody td {
+      padding: 9px 14px;
+      font-size: 0.85rem;
+      vertical-align: top;
+    }
+
+    .col-no {
+      width: 48px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .col-date {
+      width: 108px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .col-day {
+      width: 50px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .col-proj {
+      width: 134px;
+      white-space: nowrap;
+    }
+
+    .col-task {
+      width: 40%;
+    }
+
+    .col-result {
+      width: 38%;
+      color: #1e293b;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.73rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .badge-mft {
+      background: var(--tag-mft-bg);
+      color: var(--tag-mft-text);
+    }
+
+    .badge-k8s {
+      background: var(--tag-k8s-bg);
+      color: var(--tag-k8s-text);
+    }
+
+    .badge-ocp {
+      background: var(--tag-ocp-bg);
+      color: var(--tag-ocp-text);
+    }
+
+    .badge-fits {
+      background: var(--tag-fits-bg);
+      color: var(--tag-fits-text);
+    }
+
+    .week-header-row td {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 8px 14px;
+    }
+
+    .week-summary-row td {
+      background: #f8fafc;
+      padding: 12px 16px;
+      border-bottom: 2px solid #cbd5e1;
+    }
+
+    .week-issue-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      font-size: 0.82rem;
+    }
+
+    .assign-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 9px 12px;
+    }
+
+    .outcome-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 9px 12px;
+    }
+
+    .issue-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 6px;
+      padding: 9px 12px;
+    }
+
+    .fix-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 6px;
+      padding: 9px 12px;
+    }
+
+    .box-label-assign {
+      font-weight: 700;
+      color: var(--assign-title);
+      margin-bottom: 3px;
+      display: block;
+      font-size: 0.8rem;
+    }
+
+    .box-label-outcome {
+      font-weight: 700;
+      color: var(--outcome-title);
+      margin-bottom: 3px;
+      display: block;
+      font-size: 0.8rem;
+    }
+
+    .box-label-issue {
+      font-weight: 700;
+      color: var(--issue-title);
+      margin-bottom: 3px;
+      display: block;
+      font-size: 0.8rem;
+    }
+
+    .box-label-fix {
+      font-weight: 700;
+      color: var(--fix-title);
+      margin-bottom: 3px;
+      display: block;
+      font-size: 0.8rem;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      font-size: 0.79rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    @media (max-width: 860px) {
+      .week-issue-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .toolbar,
+      .header-actions {
+        display: none !important;
+      }
+      header,
+      .project-card,
+      .table-card {
+        border: 1px solid #cbd5e1;
+        box-shadow: none;
+      }
+      .week-summary-row {
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>บันทึกการปฏิบัติงาน งานที่ได้รับมอบหมาย ผลการปฏิบัติงาน และปัญหา/การแก้ไขรายสัปดาห์</h1>
+        <p>ชิณวัฒน์ ตันติสิทธิพร (6604101320) | บริษัท ธนาคารไทยเครดิต จำกัด (มหาชน)</p>
+        <p>ช่วงเวลา: 29 มิถุนายน – 19 ตุลาคม 2026 (17 สัปดาห์ / 77 วันทำการ ไม่รวมวันเสาร์-อาทิตย์ และวันหยุดธนาคาร)</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn" id="copyBtn" type="button">คัดลอกข้อมูลทั้งหมด</button>
+        <button class="btn btn-primary" onclick="window.print()" type="button">พิมพ์ / บันทึก PDF</button>
+      </div>
+    </header>
+
+    <div class="section-title">สรุปผลการปฏิบัติงานรายโปรเจกต์ (Overall Outcomes)</div>
+    <section class="projects-grid">
+      <div class="project-card">
+        <h2>1. MFT-Pipeline <span class="badge badge-mft">มิ.ย. - ก.ย.</span></h2>
+        <p>ระบบบริหารจัดการและปรับใช้การตั้งค่า IBM Sterling MFT แบบอัตโนมัติ (MFT-Pipeline-Project)</p>
+        <ul class="project-outcomes">
+          <li>พัฒนา 4 Pipelines สำหรับ NPD (Build, Export, Import, Rollback) แยกโฟลเดอร์ release/ และ draft/</li>
+          <li>สร้าง Shared Library (mft-utils) 10 โมดูล แยกตรรกะธุรกิจออกจาก Jenkinsfile</li>
+          <li>ทำ Sanitize Credentials (&lt;password&gt;, &lt;hostname&gt;, &lt;username&gt;) ด้วย jq อัตโนมัติก่อนขึ้น GitLab</li>
+          <li>ส่งค่า Secret ตอนรันด้วย Docker -e KEY passthrough และรองรับการ Rollback ด้วย Git Tag (exported-* / imported-*)</li>
+        </ul>
+      </div>
+      <div class="project-card">
+        <h2>2. Kubernetes Lab <span class="badge badge-k8s">ก.ค.</span></h2>
+        <p>ระบบคิวร้านอาหารเพื่อฝึกปฏิบัติการวางโครงสร้าง Container และ Kubernetes</p>
+        <ul class="project-outcomes">
+          <li>ได้แอปพลิเคชันแบบ Microservices พร้อมระบบ JWT / OAuth2 Authentication</li>
+          <li>ตั้งค่า K8s Deployment, Service, HTTPRoute, ConfigMap, Secret และ Probes ครบถ้วน</li>
+          <li>ใช้งาน RBAC (Role/ClusterRole), NetworkPolicy Pod-to-Pod และ CronJob สำเร็จ</li>
+        </ul>
+      </div>
+      <div class="project-card">
+        <h2>3. OpenShift Onboarding <span class="badge badge-ocp">ส.ค. - ก.ย.</span></h2>
+        <p>เว็บแพลตฟอร์ม Fullstack สำหรับรับคำขอและสร้างไฟล์ติดตั้งระบบขึ้น OpenShift</p>
+        <ul class="project-outcomes">
+          <li>ได้ระบบ Fullstack (React + NestJS + PostgreSQL) ครบ 8 Tabs พร้อมแยกสิทธิ์ Dev/DevOps</li>
+          <li>เชื่อมต่อ Red Hat Keycloak SSO (BFF HttpOnly Cookie) และแยกข้อมูลรายทีม (WAS1/WAS2)</li>
+          <li>สร้าง Kustomize, ArgoCD, Kong, Kafka, Jenkinsfile อัตโนมัติพร้อม Real-time SSE Dashboard</li>
+          <li>ลดเวลา Build Container จากกว่า 7 นาที เหลือ 1.5 นาที ด้วย Unified Single-Container</li>
+        </ul>
+      </div>
+      <div class="project-card">
+        <h2>4. FITs Budget System <span class="badge badge-fits">ก.ย. - ต.ค.</span></h2>
+        <p>ระบบบริหารจัดการงบประมาณ IT ของธนาคาร (React + .NET 10 + PostgreSQL 16)</p>
+        <ul class="project-outcomes">
+          <li>รองรับวงจรบริหารงบประมาณครบ 6 ขั้นตอน พร้อมรหัส BGID อัตโนมัติและแบ่งสัญญาข้ามปี</li>
+          <li>มีระบบ 4-Tier Waterfall Cut Simulator, Dual Ledger PO Booking และส่งออก Dynamics 365 GL</li>
+          <li>มีระบบ BOT SHA-256 Hash-Chained Audit Trail และบังคับใช้กฎ Maker-Checker</li>
+          <li>เชื่อมต่อ AAA OIDC SSO, ซิงค์โครงสร้างองค์กร HRMS และผ่านการทดสอบ E2E Playwright</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="toolbar">
+      <div class="filter-group" id="monthFilters">
+        <span class="filter-label">เดือน:</span>
+        <button class="pill active" data-month="ALL" type="button">ทั้งหมด (77 วัน)</button>
+        <button class="pill" data-month="2026-06" type="button">มิ.ย. (2)</button>
+        <button class="pill" data-month="2026-07" type="button">ก.ค. (21)</button>
+        <button class="pill" data-month="2026-08" type="button">ส.ค. (20)</button>
+        <button class="pill" data-month="2026-09" type="button">ก.ย. (22)</button>
+        <button class="pill" data-month="2026-10" type="button">ต.ค. (12)</button>
+      </div>
+      <div class="filter-group" id="projFilters">
+        <span class="filter-label">โปรเจกต์:</span>
+        <button class="pill active" data-proj="ALL" type="button">ทั้งหมด</button>
+        <button class="pill" data-proj="MFT-Pipeline" type="button">MFT-Pipeline</button>
+        <button class="pill" data-proj="K8s Lab" type="button">K8s Lab</button>
+        <button class="pill" data-proj="Onboarding App" type="button">Onboarding App</button>
+        <button class="pill" data-proj="FITs" type="button">FITs</button>
+      </div>
+      <div class="filter-group" id="viewFilters">
+        <span class="filter-label">มุมมอง:</span>
+        <button class="pill active" data-view="ALL" type="button">รายวัน + สรุปรายสัปดาห์</button>
+        <button class="pill" data-view="DAYS_ONLY" type="button">เฉพาะรายวัน</button>
+        <button class="pill" data-view="WEEKS_ONLY" type="button">เฉพาะสรุปรายสัปดาห์</button>
+      </div>
+      <input type="text" id="searchInput" class="search-input" placeholder="ค้นหางานที่ได้รับมอบหมาย, ผลลัพธ์, ปัญหา, การแก้ไข..." />
+    </section>
+
+    <div class="table-card">
+      <table id="logTable">
+        <thead>
+          <tr>
+            <th class="col-no">ลำดับ</th>
+            <th class="col-date">วันที่</th>
+            <th class="col-day">วัน</th>
+            <th class="col-proj">โปรเจกต์</th>
+            <th class="col-task">งานที่ได้รับมอบหมาย / หัวข้อการปฏิบัติงาน</th>
+            <th class="col-result">ผลการปฏิบัติงาน</th>
+          </tr>
+        </thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </div>
+
+    <div class="footer-note">
+      <span id="countText">แสดง 77 วันทำการ (17 สัปดาห์)</span>
+      <span>หมายเหตุ: ยกเว้นวันหยุดธนาคารในช่วงเวลานี้ (28-29 ก.ค. วันเฉลิมฯ ร.10 / อาสาฬหบูชา, 12 ส.ค. วันแม่แห่งชาติ, 13 ต.ค. วันนวมินทรมหาราช)</span>
+    </div>
+  </div>
+
+  <script>
+    const WEEKS_DATA = [
+      {
+        week: 1,
+        range: "29 มิ.ย. – 3 ก.ค. 2026",
+        assigned: "ออกแบบโครงสร้างสถาปัตยกรรม MFT-Pipeline ระยะที่ 2 โดยแยกไปป์ไลน์ตามหน้าที่ (Build, Export, Import) และพัฒนา Jenkinsfile สำหรับสร้าง Docker Image และนำเข้าข้อมูลสู่ระบบ MFT",
+        outcome: "ได้โครงสร้างสถาปัตยกรรม MFT-Pipeline ระยะที่ 2 ที่แยกไปป์ไลน์ตามหน้าที่ชัดเจน พร้อมพัฒนา Jenkinsfile-build (สร้างอิมเมจและสแกน Trivy) และ Jenkinsfile-import สำหรับนำเข้าข้อมูลสู่ MFT สำเร็จ",
+        problem: "การรวมขั้นตอน Build Image และ Export/Import ไว้ใน Jenkinsfile เดียวทำให้ควบคุมพารามิเตอร์ยาก และคำสั่ง Bash แบบหลายบรรทัดใน Jenkinsfile เกิดข้อผิดพลาดจากการตีความตัวแปรซ้อนกันระหว่าง Groovy กับ Shell",
+        solution: "ออกแบบโครงสร้างแยกเป็นไปป์ไลน์ตามหน้าที่ (Build, Export, Import) และเปลี่ยนมาใช้ Single-quoted Multi-line Shell (sh '''...''') ร่วมกับ Environment Variables แทนการแทรกตัวแปร Groovy ลงในสคริปต์โดยตรง",
+        days: [
+          { date: "2026-06-29", day: "จ.", proj: "MFT-Pipeline", title: "พัฒนาสคริปต์ Jenkinsfile-mft-promotion และเปรียบเทียบโครงสร้างไฟล์ JSON ของ Trigger", result: "ได้สคริปต์เปรียบเทียบความแตกต่างของไฟล์คอนฟิก Trigger แต่ละเวอร์ชัน" },
+          { date: "2026-06-30", day: "อ.", proj: "MFT-Pipeline", title: "ออกแบบสถาปัตยกรรม MFT-Pipeline-Project (JenkinsfilesPhase2 & mft-shared-library)", result: "ได้โครงสร้างการแยก Pipeline ตามหน้าที่ (Build, Export, Import) และ Shared Library" },
+          { date: "2026-07-01", day: "พ.", proj: "MFT-Pipeline", title: "เริ่มพัฒนา JenkinsfilesPhase2 แยก Pipeline สำหรับ Build Image", result: "ได้โครงสร้างเริ่มต้นของ Build Pipeline ที่แยกออกจากส่วน Export/Import" },
+          { date: "2026-07-02", day: "พฤ.", proj: "MFT-Pipeline", title: "พัฒนา Jenkinsfile-build เสร็จสมบูรณ์และสรุปแนวทางเขียน Bash Multiline", result: "Build Pipeline สร้างอิมเมจและสแกนช่องโหว่ Trivy ได้อย่างถูกต้อง" },
+          { date: "2026-07-03", day: "ศ.", proj: "MFT-Pipeline", title: "พัฒนา Jenkinsfile-build-prd และ Jenkinsfile-import สำหรับนำเข้าข้อมูล", result: "รองรับการ Build และการรันโหมด IMPORT เข้าสู่ระบบ MFT" }
+        ]
+      },
+      {
+        week: 2,
+        range: "6 – 10 ก.ค. 2026",
+        assigned: "พัฒนา Jenkins Shared Library (mft-shared-library) เพื่อแยกตรรกะธุรกิจออกจาก Jenkinsfile พร้อมพัฒนากลไกล้างข้อมูลความลับ (Sanitize Credentials) และการส่งค่า Secret เข้า Docker ตามข้อกำหนดความปลอดภัย DOP-4966",
+        outcome: "สร้าง mft-shared-library (@Library mft-utils) สำเร็จครบทั้งโมดูล harbor, dockerUtil, gitOps, mftBuild, mftExport, mftImport พร้อมระบบล้างรหัสผ่านด้วย jq และส่งค่า Secret เข้า Docker โดยไม่มีคำเตือนบน Log",
+        problem: "1) ไฟล์ JSON ที่ส่งออกจาก MFT มีรหัสผ่านและชื่อโฮสต์ของ Trading Partner ติดมาด้วย เสี่ยงรั่วไหลบน Git 2) การส่งรหัสผ่านเข้าคำสั่ง docker run เกิดคำเตือน Secret Interpolation (DOP-4966) 3) การรอผลสแกน Trivy เกิด Timeout และไฟล์ที่คอนเทนเนอร์สร้างติดปัญหา Permission บน Host",
+        solution: "1) พัฒนาฟังก์ชัน sanitizeTradingPartnerCredentials ด้วย jq แทนที่ค่าลับด้วย <password>, <hostname>, <username> อัตโนมัติ 2) ปรับ dockerUtil.groovy ให้ส่งตัวแปรผ่าน withEnv และใช้แฟล็ก docker run -e KEY (Passthrough) 3) เพิ่มเวลา waitScan เป็น 600 วินาที และรันคอนเทนเนอร์ด้วย UID/GID เดียวกับ Jenkins Agent",
+        days: [
+          { date: "2026-07-06", day: "จ.", proj: "MFT-Pipeline", title: "สร้าง mft-shared-library (@Library mft-utils: harbor, getImageTags, getExportTriggers)", result: "แยกตรรกะธุรกิจออกจาก Jenkinsfile มาไว้ใน Shared Library ภาษา Groovy สำเร็จ" },
+          { date: "2026-07-07", day: "อ.", proj: "MFT-Pipeline", title: "พัฒนาโมดูล dockerUtil, gitOps, mftExport และระบบคำนวณลำดับ <version>-build<seq>", result: "คำนวณเลขลำดับ Build ถัดไปจาก Harbor API และทำ git pull --rebase อัตโนมัติ" },
+          { date: "2026-07-08", day: "พ.", proj: "MFT-Pipeline", title: "พัฒนาฟังก์ชัน sanitizeTradingPartnerCredentials ด้วย jq ใน mftExport.groovy", result: "แทนที่รหัสผ่านด้วย <password>, <hostname>, <username> อัตโนมัติก่อน Commit ลง Git" },
+          { date: "2026-07-09", day: "พฤ.", proj: "MFT-Pipeline", title: "พัฒนาโมดูล mftImport.groovy, getImportTriggers และแก้ปัญหาสิทธิ์ไฟล์ Container", result: "นำเข้าคอนฟิกเข้าสู่ MFT สำเร็จ และแก้ปัญหา Permission ระหว่าง Host กับ Container" },
+          { date: "2026-07-10", day: "ศ.", proj: "MFT-Pipeline", title: "พัฒนา mftBuild.groovy และปรับปรุง dockerUtil ส่งค่า Secret แบบ -e KEY passthrough (DOP-4966)", result: "กำจัดคำเตือน Secret Interpolation บน Jenkins Log 100% ตามมาตรฐานความปลอดภัยธนาคาร" }
+        ]
+      },
+      {
+        week: 3,
+        range: "13 – 17 ก.ค. 2026",
+        assigned: "พัฒนาระบบปั๊ม Git Tag (exported-* / imported-*) บน GitOps Repository, พัฒนาไปป์ไลน์สำหรับกู้คืนค่าคอนฟิก (Rollback NPD Pipeline) และจัดเรียงลำดับเวอร์ชันแท็กบนหน้า Jenkins UI",
+        outcome: "ได้ระบบปั๊ม Git Tag (exported-* และ imported-*), พัฒนา Rollback NPD Pipeline สำหรับย้อนคืนค่าคอนฟิกจาก Tag ในอดีต และเรียงลำดับเวอร์ชันด้วย Natural Sort สำเร็จ",
+        problem: "1) ชื่อ Trigger ใน MFT บางรายการมีช่องว่างต่อท้าย ทำให้การตัดคำคลาดเคลื่อน 2) การเรียงลำดับ IMAGE_TAG แบบตัวอักษรทำให้ build10 แสดงผลก่อน build2 และการใช้ \\d ใน Regex ทำให้ Jenkins Parser Error 3) สคริปต์ Active Choice บน Jenkins Master เรียกใช้ฟังก์ชันจาก Shared Library ไม่ได้ (MissingMethodException)",
+        solution: "1) เปลี่ยนตัวคั่นรายชื่อ Trigger เป็นจุลภาคและใช้วิธีอ่านทีละบรรทัดด้วย eachLine 2) เขียนอัลกอริทึม Natural Sort ด้วย [0-9]+|[^0-9]+ แทนการใช้ \\d 3) ใช้ Inline Groovy Script (sandbox: false) ใน Active Choice ของ IMAGE_TAG และ ROLLBACK_TAG พร้อมใช้โฟลเดอร์ชั่วคราว --config <temp-dir> ตอนล็อกอิน Harbor",
+        days: [
+          { date: "2026-07-13", day: "จ.", proj: "MFT-Pipeline", title: "ร่างเอกสารลำดับการทำงานของระบบ MFT Pipeline Flows", result: "ได้แผนภาพและรายละเอียดขั้นตอนการทำงานตั้งแต่ Build, Export, Import จนถึง Rollback" },
+          { date: "2026-07-14", day: "อ.", proj: "MFT-Pipeline", title: "ตั้งค่า GitOps Branch สำหรับทดสอบ (POC-Domain / DEV-Domain) และแก้ปัญหาช่องว่างในชื่อ Trigger", result: "รองรับการดึงและส่งออก Trigger ที่มีช่องว่างต่อท้ายชื่อได้อย่างแม่นยำ" },
+          { date: "2026-07-15", day: "พ.", proj: "MFT-Pipeline", title: "จัดทำ README.md แยกสำหรับ Production/Demo และแก้ Harbor Auth แบบ --config temp-dir", result: "ดึงรายการ Trigger บน Active Choice ได้โดยไม่ทิ้งไฟล์รหัสผ่านไม่เข้ารหัสไว้บนเซิร์ฟเวอร์" },
+          { date: "2026-07-16", day: "พฤ.", proj: "MFT-Pipeline", title: "พัฒนาระบบปั๊ม Git Tag รูปแบบ exported-* และ imported-* ใน gitOps.groovy", result: "บันทึกประวัติผู้ดำเนินการ วันที่ เวลา และสถานะการปรับใช้ลงบน GitOps ตรวจสอบย้อนกลับได้" },
+          { date: "2026-07-17", day: "ศ.", proj: "MFT-Pipeline", title: "พัฒนา Rollback NPD Pipeline, โมดูล getRollbackTags และอัลกอริทึม Natural Sort", result: "กู้คืนค่าคอนฟิก MFT จาก Git Tag Snapshot กลับมาปรับใช้ใหม่ได้อัตโนมัติ" }
+        ]
+      },
+      {
+        week: 4,
+        range: "20 – 24 ก.ค. 2026",
+        assigned: "จัดระเบียบโครงสร้างโฟลเดอร์ไปป์ไลน์สำหรับใช้งานจริง (release/) และทดสอบ (draft/) พร้อมจัดทำคู่มือการใช้งาน และฝึกปฏิบัติการสร้างแอปพลิเคชันคิวร้านอาหาร (restaurant) เพื่อนำขึ้นระบบ Kubernetes",
+        outcome: "จัดโครงสร้าง JenkinsfilesPhase2 แยกโฟลเดอร์ release/ และ draft/ พร้อมคู่มือครบ 3 ฉบับ และพัฒนาเว็บแอปคิวร้านอาหาร (restaurant) พร้อมนำขึ้น Kubernetes Cluster สำเร็จ",
+        problem: "1) การแก้ไขโค้ดทดสอบใน MFT Pipeline กระทบกับสายงานหลัก และ mftImport เรียกใช้ Private Property จนเกิด MissingPropertyException 2) ในโปรเจกต์ K8s Lab (restaurant) เซิร์ฟเวอร์ Express 5 แครชจาก Wildcard Routing (*) และเข้าถึงจากภายนอก Container ไม่ได้ (404)",
+        solution: "1) จัดโครงสร้างแยกโฟลเดอร์ release/ (ชี้ gitops/wai และ shared-lib) กับ draft/ (ชี้ gitops/devops และ shared-lib-Demo) และเปลี่ยน getBuildUser() เป็น Public 2) ปรับ Route Pattern ให้รองรับ Express 5 ผูก Server กับ 0.0.0.0 และตั้งค่า Kubernetes Service / HTTPRoute",
+        days: [
+          { date: "2026-07-20", day: "จ.", proj: "MFT-Pipeline", title: "เพิ่มพารามิเตอร์ EXPORT_EMPTY_SENSITIVE_FIELDS และจัดทำคู่มือ User Manual / Flows Guide", result: "ซิงค์โค้ดจากกิ่ง Demo เข้าสู่สายหลัก (main / shared-lib) และได้คู่มือการใช้งานครบ 3 ฉบับ" },
+          { date: "2026-07-21", day: "อ.", proj: "MFT-Pipeline", title: "จัดโครงสร้าง JenkinsfilesPhase2 แยกโฟลเดอร์ release/ (gitops/wai) และ draft/ (gitops/devops)", result: "แยกสายงานหลัก (MFT-*-NPD.jenkinsfile) ออกจากสายงานทดสอบ (draft/) ชัดเจน" },
+          { date: "2026-07-22", day: "พ.", proj: "MFT-Pipeline", title: "จัดเตรียมโครงสร้างไฟล์เอกสารรายงานสหกิจศึกษาและภาคผนวกในโฟลเดอร์ documents/", result: "ได้โครงสร้างไฟล์ Word สำหรับรายงานสหกิจศึกษาและภาคผนวกครบทุกส่วน" },
+          { date: "2026-07-23", day: "พฤ.", proj: "K8s Lab", title: "พัฒนาโปรเจกต์ระบบคิวร้านอาหาร (restaurant) และสร้าง Jenkins Pipeline", result: "ได้แอปพลิเคชันคิวร้านอาหารและ Pipeline สำหรับ Build/Push อิมเมจขึ้น Harbor" },
+          { date: "2026-07-24", day: "ศ.", proj: "K8s Lab", title: "พัฒนา Admin JWT Auth และตั้งค่า Kubernetes ConfigMap, Service, HTTPRoute", result: "เข้าถึงระบบผ่านโดเมนบน Kubernetes และเปลี่ยนสีธีม/ชื่อร้านผ่าน ConfigMap ได้" }
+        ]
+      },
+      {
+        week: 5,
+        range: "27 – 31 ก.ค. 2026 (หยุด 28–29 ก.ค. วันเฉลิมฯ ร.10 / อาสาฬหบูชา)",
+        assigned: "พัฒนาฟีเจอร์เชื่อมต่อ Kubernetes API ภายในคลัสเตอร์พร้อมตั้งค่า RBAC, Probes, CronJob, แยกสถาปัตยกรรม Microservices และเริ่มจัดทำเล่มรายงานสหกิจศึกษา บทที่ 1–2",
+        outcome: "พัฒนาฟีเจอร์เปลี่ยนรหัสผ่านผ่าน In-cluster K8s API (RBAC), ตั้งค่า Probes/CronJob, แยก Microservices สื่อสารระดับ Pod-to-Pod และเขียนรายงานสหกิจศึกษา บทที่ 1–2 เสร็จสมบูรณ์",
+        problem: "1) Jenkins Agent ติดข้อจำกัดเครือข่ายทำให้สั่ง Deploy ไปยัง Kubernetes Cluster โดยตรงไม่ได้ 2) เมื่อรันแอปคิวร้านอาหารหลาย Replicas ข้อมูลคิวแต่ละ Pod ไม่ตรงกัน และหลัง Patch รหัสผ่านใหม่ลง K8s Secret แล้วล็อกอินด้วยรหัสใหม่ไม่ได้ทันที",
+        solution: "1) แยก Stage ให้ Jenkins ทำเฉพาะ Build และ Push อิมเมจขึ้น Harbor 2) แยกสถาปัตยกรรมเป็น Frontend Pod กับ Backend State Pod สื่อสารผ่าน WebSocket และอัปเดตรหัสผ่านใน In-memory Cache ทันทีควบคู่กับการ Patch K8s Secret ผ่าน In-cluster REST API",
+        days: [
+          { date: "2026-07-27", day: "จ.", proj: "K8s Lab", title: "พัฒนาฟีเจอร์เปลี่ยนรหัสผ่านโดย Patch K8s Secret ผ่าน In-cluster API และ RBAC", result: "แอปพลิเคชันสามารถอัปเดตค่า Secret บน Kubernetes Cluster ได้โดยตรงอย่างปลอดภัย" },
+          { date: "2026-07-30", day: "พฤ.", proj: "K8s Lab", title: "ตั้งค่า K8s Probes, CronJob รีเซ็ตคิวอัตโนมัติ และแยก Microservices Pod-to-Pod", result: "ระบบรองรับการรันหลาย Replicas ด้วย WebSocket และรีเซ็ตคิวตามเวลาที่กำหนดได้" },
+          { date: "2026-07-31", day: "ศ.", proj: "MFT-Pipeline", title: "ทดสอบ K8s RBAC และเขียนรายงานสหกิจศึกษา MFT-Pipeline บทคัดย่อ และบทที่ 1-2", result: "จัดทำเอกสาร ABSTRACT.md, 04-Chapter1.md และ 05-Chapter2.md เสร็จสมบูรณ์" }
+        ]
+      },
+      {
+        week: 6,
+        range: "3 – 7 ส.ค. 2026",
+        assigned: "ออกแบบและพัฒนาระบบ OpenShift App Onboarding เพื่อรับคำขอและสร้างไฟล์คอนฟิกสำหรับนำแอปพลิเคชันขึ้นระบบ OpenShift โดยยกระดับจากไฟล์ต้นแบบสู่เว็บแอปพลิเคชันแบบ Fullstack (React + NestJS)",
+        outcome: "ยกระดับระบบ OpenShift App Onboarding จากไฟล์ HTML ต้นแบบสู่ Fullstack Monorepo (React + NestJS) ครบ 8 Tabs พร้อมระบบแบ่งสิทธิ์ RBAC, ตาราง Firewall และตัวดูไฟล์สถาปัตยกรรม",
+        problem: "ต้นแบบเว็บ OpenShift Onboarding แบบ Single-file HTML ไม่สามารถจัดเก็บสถานะใบงานลงฐานข้อมูล แยกสิทธิ์ระหว่างทีม Dev กับ DevOps หรือตรวจสอบความถูกต้องของไฟล์ Architecture Diagram ได้",
+        solution: "ยกระดับเป็น Fullstack Monorepo (React + NestJS) แบ่งฟอร์มออกเป็น 8 Tabs พร้อมสร้าง DTO Validation, ระบบ RBAC แยกบทบาท Dev/DevOps, ตาราง Firewall และตัวดูไฟล์สถาปัตยกรรม (Diagram Viewer)",
+        days: [
+          { date: "2026-08-03", day: "จ.", proj: "Onboarding App", title: "พัฒนาต้นแบบ OpenShift App Onboarding แบบ Single-file HTML Wizard 3 ขั้นตอน", result: "ได้เว็บต้นแบบที่สร้างไฟล์ Kustomize, ArgoCD, Jenkinsfile และดาวน์โหลดเป็น ZIP ได้ทันที" },
+          { date: "2026-08-04", day: "อ.", proj: "Onboarding App", title: "ยกระดับสู่ Fullstack Monorepo (React + NestJS) แบบ 8 Tabs พร้อมอัปโหลด Diagram", result: "ได้โครงสร้างระบบ Fullstack ครบ 8 หมวดหมู่ พร้อมตรวจสอบไฟล์ Diagram ก่อนส่ง" },
+          { date: "2026-08-05", day: "พ.", proj: "Onboarding App", title: "พัฒนาโครงสร้าง DTO สำหรับระบบ Login และฟังก์ชันจัดการวันที่ในฝั่ง Frontend", result: "ตรวจสอบข้อมูลการเข้าสู่ระบบและแสดงผลรูปแบบวันที่ได้อย่างถูกต้อง" },
+          { date: "2026-08-06", day: "พฤ.", proj: "Onboarding App", title: "ปรับปรุงโครงสร้างหน้าเว็บหลัก (index.html, Icon) และฟอร์มรับข้อมูล Onboarding", result: "หน้าฟอร์มแสดงผลเป็นระเบียบและรองรับการกรอกข้อมูลหลาย Services" },
+          { date: "2026-08-07", day: "ศ.", proj: "Onboarding App", title: "พัฒนาระบบ RBAC, ธีม Calm Light, ตาราง Firewall, Toolbar และ Diagram Viewer", result: "ได้หน้าตา UI ที่อ่านง่าย พร้อมตัวดูไฟล์สถาปัตยกรรมและระบบแบ่งสิทธิ์ผู้ใช้งาน" }
+        ]
+      },
+      {
+        week: 7,
+        range: "10 – 14 ส.ค. 2026 (หยุด 12 ส.ค. วันแม่แห่งชาติ)",
+        assigned: "พัฒนาฟอร์มตั้งค่าโครงสร้างพื้นฐานราย Service (Mongo, Kafka, Kong แยกตาม DEV/SIT/UAT), เชื่อมต่อ API ของ GitLab และ Jenkins เพื่อดึงรายการอัตโนมัติ และนำระบบขึ้นทดสอบร่วมกับ PostgreSQL บน Kubernetes",
+        outcome: "เชื่อมต่อ Live API ของ GitLab และ Jenkins สำหรับค้นหา URL อัตโนมัติ, สร้างระบบผูกแถวข้อมูล DEV/SIT/UAT ตาม Service อัตโนมัติ และนำระบบขึ้นทดสอบร่วมกับฐานข้อมูล PostgreSQL บน Kubernetes สำเร็จ",
+        problem: "ผู้ใช้งานกรอก URL ของ GitLab Repository และ Jenkins Job ผิดพลาดบ่อย และเมื่อใบงานมีหลาย Microservices การกรอกค่า Mongo, Kafka, Kong แยกตามสภาพแวดล้อม (DEV/SIT/UAT) ทำได้ยากและเกิดข้อมูลตกหล่น",
+        solution: "เชื่อมต่อ Live API ของ GitLab และ Jenkins เพื่อทำระบบค้นหา Autocomplete และพัฒนาระบบ Multi-service Binding ที่สร้างแถวตั้งค่า DEV/SIT/UAT แยกตามแต่ละ Service ให้อัตโนมัติเมื่อเปิดใช้งานคอมโพเนนต์",
+        days: [
+          { date: "2026-08-10", day: "จ.", proj: "Onboarding App", title: "พัฒนา K8s Gateway API, จัดกลุ่มฟอร์มตาม Service และผูกการสร้างแถว DEV/SIT/UAT", result: "เมื่อเลือกใช้ Mongo/Kafka/Kong ระบบสร้างแถวแยกตาม Service และ ENV ให้อัตโนมัติ" },
+          { date: "2026-08-11", day: "อ.", proj: "Onboarding App", title: "เชื่อมต่อ Live API ของ GitLab และ Jenkins เพื่อทำระบบ Autocomplete", result: "ค้นหาและเลือก URL ของ GitLab Repo และ Jenkins Job จริงจากเซิร์ฟเวอร์ได้ทันที" },
+          { date: "2026-08-13", day: "พฤ.", proj: "Onboarding App", title: "ตรวจสอบและทดสอบการ Deploy ระบบร่วมกับ PostgreSQL บน Kubernetes Cluster", result: "ระบบเชื่อมต่อฐานข้อมูล PostgreSQL บนคลัสเตอร์และบันทึกข้อมูลได้สำเร็จ" },
+          { date: "2026-08-14", day: "ศ.", proj: "Onboarding App", title: "วิเคราะห์แนวทางปรับปรุงความเสถียรของระบบจัดการสถานะใบงานและการลบข้อมูล", result: "ได้แนวทางการจัดการ Foreign Key Relations และลำดับการลบข้อมูลที่ปลอดภัย" }
+        ]
+      },
+      {
+        week: 8,
+        range: "17 – 21 ส.ค. 2026",
+        assigned: "ปรับปรุงความเสถียรของระบบจัดการใบงาน (การลบใบงานและการบันทึก Draft), ปรับโครงสร้าง Frontend แยกตามแท็บ, พัฒนาโมดูลเชื่อมต่อ Jira พร้อมสร้างข้อความ SDP Note และเขียนรายงานสหกิจศึกษา บทที่ 3–4",
+        outcome: "แก้ไขระบบลบใบงานและบันทึก Draft ให้ทำงานเสถียร, แยกโครงสร้าง Frontend Component รายแท็บ, สร้างโมดูลเชื่อมต่อ Jira/SDP Note และเขียนรายงานสหกิจศึกษา บทที่ 3–4 เสร็จสมบูรณ์",
+        problem: "1) การสั่งลบใบงาน Onboarding บนฐานข้อมูล PostgreSQL เกิด Error 500 เนื่องจากติด Foreign Key Constraint ของตารางลูก 2) ผู้ใช้งานไม่สามารถบันทึกใบงานเป็น Draft ได้หากยังกรอกข้อมูลบังคับไม่ครบทุกแท็บ",
+        solution: "1) แก้ไขลำดับการลบข้อมูลแบบ Cascade ในฝั่ง Backend ให้ลบข้อมูลตารางลูก (Services, FirewallRequests) ก่อนลบใบงานหลัก 2) แยกเงื่อนไข Validation ระหว่างโหมด Save Draft กับ Submit และแยก Frontend Component รายแท็บ",
+        days: [
+          { date: "2026-08-17", day: "จ.", proj: "Onboarding App", title: "แก้ไขลำดับการลบข้อมูล (Cascade), เพิ่มสิทธิ์ DevOps และตั้งค่า Environment Files", result: "ทีม DevOps ลบใบงานได้โดยไม่เกิด Error 500 และแยกคอนฟิกตามสภาพแวดล้อมชัดเจน" },
+          { date: "2026-08-18", day: "อ.", proj: "Onboarding App", title: "ปรับปรุง Schema ของ FirewallRequest Entity และการตั้งค่าฐานข้อมูล Backend", result: "โครงสร้างตารางฐานข้อมูลรองรับการผูกกฎ Firewall เข้ากับแต่ละ Service ได้ครบถ้วน" },
+          { date: "2026-08-19", day: "พ.", proj: "Onboarding App", title: "แยก Frontend Components ราย Tab/Modal และแก้ไขระบบบันทึก Draft", result: "โค้ดแยกส่วนชัดเจนดูแลรักษาง่าย และบันทึก Draft ได้แม้ยังกรอกข้อมูลไม่ครบ" },
+          { date: "2026-08-20", day: "พฤ.", proj: "MFT-Pipeline", title: "จัดทำรายงานสหกิจศึกษา MFT-Pipeline บทที่ 3-4 และออกแบบการ์ด Kafka ใน Onboarding", result: "ได้เอกสาร 06-Chapter3.md และ 07-Chapter4.md พร้อมแยกส่วนการ์ด Kafka ชัดเจน" },
+          { date: "2026-08-21", day: "ศ.", proj: "Onboarding App", title: "จัดทำฐานความรู้ wiki/ ของโปรเจกต์ และพัฒนาโมดูลเชื่อมต่อ Jira พร้อมสร้าง SDP Note", result: "มีเอกสารสถาปัตยกรรมครบถ้วน และสร้างข้อความสำหรับเปิดใบงาน Firewall ได้ทันที" }
+        ]
+      },
+      {
+        week: 9,
+        range: "24 – 28 ส.ค. 2026",
+        assigned: "พัฒนาระบบแจ้งเตือนสถานะใบงานแบบ Real-time บนหน้า Dashboard, ระบบแยกสิทธิ์และกรองข้อมูลใบงานตามทีม (Team-scoped Isolation), โหมดแสดงผล Dark/Light Theme และหน้าเปรียบเทียบการเปลี่ยนแปลง (Architecture Diff)",
+        outcome: "ได้ระบบแจ้งเตือนและอัปเดตสถานะ Dashboard แบบ Real-time ด้วย SSE, ระบบแยกข้อมูลใบงานตามทีม (Team-scoped Isolation), โหมด Dark/Light Theme, ระบบ Auto-save Draft และหน้าแสดงผล Architecture Diff",
+        problem: "1) หน้า Dashboard ไม่อัปเดตสถานะทันทีเมื่อมีการส่งหรืออนุมัติใบงาน และผู้ใช้ต่างทีมมองเห็นใบงานข้ามทีมได้ 2) เมื่อสลับเป็นโหมดมืด (Dark Mode) ข้อความ Label บนการ์ด Kafka/Kong มองไม่เห็น และข้อมูลที่กรอกหายเมื่อเผลอกดรีเฟรช (F5)",
+        solution: "1) พัฒนาระบบแจ้งเตือน Real-time ด้วย Server-Sent Events (SSE) และบังคับใช้ Team-scoped Isolation กรองใบงานตามทีม 2) แก้ไข CSS Variables ของ Dark Mode ให้ครบทุกแท็บ และเพิ่มระบบ Auto-save Draft ลงใน LocalStorage",
+        days: [
+          { date: "2026-08-24", day: "จ.", proj: "Onboarding App", title: "พัฒนาระบบแจ้งเตือนและอัปเดตสถานะ Dashboard แบบ Real-time ด้วย SSE", result: "หน้า Dashboard อัปเดตตัวเลขและแสดงแจ้งเตือนทันทีที่มีการส่งหรืออนุมัติใบงาน" },
+          { date: "2026-08-25", day: "อ.", proj: "Onboarding App", title: "พัฒนาระบบแยกสิทธิ์และกรองข้อมูลใบงานตามทีม (Team-scoped Isolation)", result: "แต่ละทีมเห็นและจัดการเฉพาะใบงานของทีมตนเอง ในขณะที่ DevOps เห็นภาพรวมทั้งหมด" },
+          { date: "2026-08-26", day: "พ.", proj: "Onboarding App", title: "พัฒนาโหมด Dark/Light Theme, Auto-save Draft และผูก Severity เข้ากับ Replicas/HPA", result: "สลับโหมดมืด/สว่างได้สมบูรณ์ ไม่ข้อมูลหายเมื่อกด F5 และกำหนดค่า HPA ตามระดับความสำคัญอัตโนมัติ" },
+          { date: "2026-08-27", day: "พฤ.", proj: "Onboarding App", title: "พัฒนาระบบแสดงผล Architecture Diff ([NEW] highlights) และปรับปรุง Manifests", result: "ทีม DevOps เห็นจุดที่มีการเพิ่มหรือแก้ไขทรัพยากรในใบงานได้อย่างชัดเจน" },
+          { date: "2026-08-28", day: "ศ.", proj: "Onboarding App", title: "ทบทวนสถาปัตยกรรมความปลอดภัยและเตรียมความพร้อมสำหรับเชื่อมต่อ Keycloak SSO", result: "ได้ข้อสรุปแนวทางการทำ Authorization Code Flow และการใช้ HttpOnly Cookie" }
+        ]
+      },
+      {
+        week: 10,
+        range: "31 ส.ค. – 4 ก.ย. 2026",
+        assigned: "เชื่อมต่อระบบยืนยันตัวตน Red Hat Keycloak SSO, ปรับปรุงโครงสร้างคอนเทนเนอร์เพื่อลดเวลา Build, เพิ่มแท็บตั้งค่า GitOps Automation และปรับปรุงระบบวิเคราะห์สาเหตุข้อผิดพลาดใน MFT-Pipeline",
+        outcome: "เชื่อมต่อ Red Hat Keycloak SSO (BFF HttpOnly Cookie) สำเร็จ, ยุบรวม Frontend/Backend เป็นคอนเทนเนอร์เดียวลดเวลา Build จาก 7 นาที เหลือ 1.5 นาที, เพิ่มแท็บที่ 8 GitOps Automation และเพิ่มระบบวิเคราะห์ 404 Error 2 ระดับใน MFT-Pipeline",
+        problem: "1) ใน MFT-Pipeline คำสั่ง reactiveReference ไม่รองรับกับ Jenkins ปัจจุบัน และเมื่อเกิด 404 Error ไม่ทราบว่าเกิดจากชื่อ Trigger ผิดหรือปัญหาเครือข่าย 2) ใน Onboarding App การเก็บ Token ใน localStorage เสี่ยงต่อ XSS และการแยก Build 2 คอนเทนเนอร์ใช้เวลานานกว่า 7 นาที",
+        solution: "1) เปลี่ยน DSL เป็น activeChoiceHtml เพิ่ม Client-side Validation ปิดปุ่ม Build เมื่อพารามิเตอร์ไม่ครบ และเพิ่มระบบวิเคราะห์ 404 Error 2 ระดับ 2) เชื่อมต่อ Red Hat Keycloak SSO แบบ BFF (HttpOnly Cookie) และรวม Frontend/Backend เป็นคอนเทนเนอร์เดียว ลดเวลา Build เหลือ 1.5 นาที",
+        days: [
+          { date: "2026-08-31", day: "จ.", proj: "MFT-Pipeline", title: "เพิ่มระบบวิเคราะห์ 404 Error 2 ระดับ, เปลี่ยนใช้ activeChoiceHtml และสรุปเอกสาร src/", result: "แจ้งสาเหตุชัดเจนเมื่อไม่พบ Trigger บน MFT และชี้ release/ ไปยัง gitops/wai สำเร็จ" },
+          { date: "2026-09-01", day: "อ.", proj: "Onboarding App", title: "เชื่อมต่อ Red Hat Keycloak SSO (BFF Cookie) และรวม Frontend/Backend เป็นคอนเทนเนอร์เดียว", result: "ล็อกอินผ่าน Keycloak ของธนาคารได้จริง และลดจำนวนคอนเทนเนอร์ที่ต้องดูแลลงครึ่งหนึ่ง" },
+          { date: "2026-09-02", day: "พ.", proj: "Onboarding App", title: "ปรับปรุง Dockerfile ลดเวลา Build, แยกสิทธิ์ทีม WAS1/WAS2 และเปลี่ยน Firewall เป็นการ์ด", result: "ลดเวลา Build จาก 7 นาที เหลือ 1.5 นาที และหน้าจอ Firewall ไม่มีแถบเลื่อนแนวนอนอีกต่อไป" },
+          { date: "2026-09-03", day: "พฤ.", proj: "Onboarding App", title: "พัฒนาระบบสร้างค่า Kafka SIT/UAT อัตโนมัติ พร้อมระบบติดตามผู้ใช้ออนไลน์", result: "ระบบคำนวณชื่อ Topic/Consumer Group ของ SIT และ UAT ให้ทีม DevOps อัตโนมัติ" },
+          { date: "2026-09-04", day: "ศ.", proj: "Onboarding App", title: "เพิ่มแท็บที่ 8 GitOps Automation บนหน้าฟอร์ม Onboarding และปรับปรุงระบบ SSO", result: "รองรับการตั้งค่าพารามิเตอร์สำหรับไปป์ไลน์ GitOps ครบทั้ง 8 ขั้นตอนในระบบเดียว" }
+        ]
+      },
+      {
+        week: 11,
+        range: "7 – 11 ก.ย. 2026",
+        assigned: "พัฒนาระบบซิงค์พารามิเตอร์อัตโนมัติในแท็บ GitOps, เสริมความมั่นคงปลอดภัยของระบบ Onboarding ก่อนส่งมอบ และเริ่มต้นวางโครงสร้างโปรเจกต์ระบบบริหารจัดการงบประมาณ IT ของธนาคาร (FITs)",
+        outcome: "ส่งมอบระบบ OpenShift Onboarding พร้อมฟีเจอร์ซิงค์พารามิเตอร์ Job 01/02, ระบบ Database Retry, การตรวจสอบความปลอดภัยระดับองค์กร (RFC 1123, QuotaValidator) และเริ่มต้นโครงสร้างระบบบริหารงบประมาณ IT (FITs) สำเร็จ",
+        problem: "1) ในแท็บ GitOps ของ Onboarding App ผู้ใช้ต้องกรอกพารามิเตอร์ซ้ำกันระหว่าง Jenkins Job 01 และ Job 02 และเมื่อฐานข้อมูลหลุดการเชื่อมต่อชั่วคราวระบบไม่สามารถต่อใหม่เองได้ 2) ในช่วงเริ่มต้นโปรเจกต์ FITs ผู้ใช้ระดับ Viewer ยังแก้ไขข้อมูลบางส่วนได้ และช่องกรอกตัวเลขในตารางแคบเกินไป",
+        solution: "1) พัฒนาระบบ Auto-sync ส่งค่าจาก Job 01 ไปยัง Job 02 อัตโนมัติ เพิ่มระบบ Database Connection Retry และเสริมความปลอดภัย QuotaValidator / RFC 1123 2) บังคับใช้ตารางสิทธิ์ (Authorisation Matrix) และ Row-level Security ใน FITs พร้อมขยายขนาดช่องกรอกตัวเลขในตาราง",
+        days: [
+          { date: "2026-09-07", day: "จ.", proj: "Onboarding App", title: "พัฒนาระบบซิงค์พารามิเตอร์ระหว่าง Jenkins Job 01 และ Job 02 ในแท็บ GitOps", result: "ข้อมูลที่กรอกใน Job 01 ถูกส่งต่อไปยังพารามิเตอร์ของ Job 02 อัตโนมัติโดยไม่ต้องกรอกซ้ำ" },
+          { date: "2026-09-08", day: "อ.", proj: "Onboarding App", title: "จัดทำเอกสารคู่มือสถาปัตยกรรมและการปรับจูนทรัพยากรใน README.md", result: "ได้คู่มือนักพัฒนาและแนวทางการตั้งค่า Resource Requests/Limits ที่พร้อมส่งมอบ" },
+          { date: "2026-09-09", day: "พ.", proj: "Onboarding App", title: "พัฒนาระบบจัดการสถานะการเชื่อมต่อฐานข้อมูลพร้อมระบบ Retry อัตโนมัติ", result: "ระบบสามารถกู้คืนการเชื่อมต่อฐานข้อมูลได้เองเมื่อเกิดปัญหาเครือข่ายชั่วคราว" },
+          { date: "2026-09-10", day: "พฤ.", proj: "Onboarding App", title: "ยกระดับความปลอดภัย (RFC 1123, QuotaValidator, Signed FSM) และสรุป Knowledge Base", result: "ผ่านการทดสอบ Unit Tests ความปลอดภัยระดับองค์กร และได้เอกสารสรุปองค์ความรู้ครบชุด" },
+          { date: "2026-09-11", day: "ศ.", proj: "FITs", title: "เริ่มโปรเจกต์ระบบงบประมาณ IT วางโครงสร้าง Real-time SSE, ผู้นำเข้าข้อมูล FY27 และ Auth", result: "ได้ระบบพื้นฐานสำหรับจัดการงบประมาณ IT พร้อมนำเข้าข้อมูลและจำกัดสิทธิ์ตามบทบาท" }
+        ]
+      },
+      {
+        week: 12,
+        range: "14 – 18 ก.ย. 2026",
+        assigned: "ย้ายฐานข้อมูลระบบ FITs สู่ PostgreSQL, พัฒนาวงจรการบริหารงบประมาณ 6 ขั้นตอน, ออกแบบหน้าจอต้นแบบ (mockui.html), พัฒนาฟีเจอร์แบ่งสัญญาข้ามปีงบประมาณ และปรับปรุงการดึงรายชื่อ Trigger ใน MFT-Pipeline",
+        outcome: "ย้ายระบบ FITs สู่ฐานข้อมูล PostgreSQL, พัฒนาวงจรบริหารงบประมาณครบ 6 ขั้นตอน, สร้างต้นแบบ mockui.html, ฟีเจอร์แบ่งสัญญาข้ามปีงบประมาณ, 4-Tier Cut Simulator และปรับปรุงการกรองรายชื่อ Trigger ใน MFT-Pipeline",
+        problem: "1) ใน MFT-Pipeline รายการ Trigger บนหน้า Jenkins มีข้อความ Picked up JAVA_TOOL_OPTIONS จาก stderr ปะปนเข้ามาและรายชื่อไม่เรียงตามตัวอักษร 2) ใน FITs คอนเทนเนอร์ Nginx ปกติรันบน OpenShift ไม่ได้เพราะติดสิทธิ์ Root และการคำนวณงบประมาณสัญญาข้ามปีงบประมาณยังคำนวณรวมเป็นก้อนเดียว",
+        solution: "1) กรองข้อความ JAVA_TOOL_OPTIONS และแยก stderr ออกจากรายการ Trigger พร้อมจัดเรียงตามตัวอักษรใน getExportTriggers และ getImportTriggers 2) ปรับคอนเทนเนอร์เป็น Unprivileged Nginx ย้ายฐานข้อมูลสู่ PostgreSQL และพัฒนาฟีเจอร์แบ่งสัญญาข้ามปีงบประมาณตามสัดส่วนเดือน",
+        days: [
+          { date: "2026-09-14", day: "จ.", proj: "FITs", title: "ย้ายฐานข้อมูลสู่ PostgreSQL, เพิ่ม Audit Trail API และป้องกันข้อมูลรั่วไหลข้ามทีม", result: "ระบบทำงานบน PostgreSQL เต็มรูปแบบ พร้อมปิดช่องโหว่การเข้าถึงข้อมูลข้ามทีมทั้งหมด" },
+          { date: "2026-09-15", day: "อ.", proj: "FITs", title: "พัฒนาฟีเจอร์สร้างหมวดหมู่งบประมาณแบบ Dynamic และตั้งค่า Nginx แบบ Unprivileged", result: "ผู้ดูแลเพิ่มหมวดหมู่ได้เองผ่านหน้าเว็บ และคอนเทนเนอร์พร้อมรันบน OpenShift" },
+          { date: "2026-09-16", day: "พ.", proj: "FITs", title: "พัฒนาวงจรบริหารงบประมาณ 6 ขั้นตอน, ปรับธีมธนาคารไทยเครดิต และแยก Seed Data เป็น JSON", result: "รองรับกระบวนการทำงานครบ 6 ขั้นตอน และแยกข้อมูลจำลองออกจากโค้ด C# ได้อย่างสะอาด" },
+          { date: "2026-09-17", day: "พฤ.", proj: "FITs", title: "สร้างต้นแบบ mockui.html และเพิ่มฟีเจอร์แบ่งสัญญาข้ามปีงบประมาณและ PO Booking", result: "ได้ต้นแบบ UI มาตรฐาน (Golden Benchmark) และคำนวณงบประมาณข้ามปีตามปฏิทินได้" },
+          { date: "2026-09-18", day: "ศ.", proj: "MFT-Pipeline", title: "กรองข้อความ JAVA_TOOL_OPTIONS ใน MFT Trigger Helper และพัฒนา 4-Tier Cut Simulator ใน FITs", result: "รายการ Trigger บน Jenkins แสดงผลเรียงตามตัวอักษรไร้ข้อความรบกวน และจำลองปรับลดงบใน FITs ได้" }
+        ]
+      },
+      {
+        week: 13,
+        range: "21 – 25 ก.ย. 2026",
+        assigned: "พัฒนาฟีเจอร์หลักของระบบ FITs ตามข้อกำหนดด้านธรรมาภิบาลธนาคาร (รหัส BGID, กฎ Maker-Checker, ระบบ SHA-256 Audit Trail, หน้า Catalog & GL, หมวดหมู่ 2 ระดับ) และจัดทำรายงานสหกิจศึกษา บทที่ 5–6 จนครบเล่ม",
+        outcome: "ส่งมอบฟีเจอร์หลักของ FITs (รหัส BGID, กฎ Maker-Checker, สายโซ่ SHA-256 Audit Trail, หน้า Catalog & GL, การจัดหมวดหมู่ 2 ระดับ, คัดลอกงบข้ามปี, แนบไฟล์) และเขียนเล่มรายงานสหกิจศึกษา MFT-Pipeline ครบทั้ง 6 บท",
+        problem: "1) ใน MFT-Pipeline เมื่อ Active Choice ดึงรายการ Trigger ล้มเหลว หน้าจอแสดงเพียงรายการว่างทำให้ผู้ใช้ไม่ทราบสาเหตุ 2) ใน FITs พบช่องโหว่ด้าน Governance เช่น ผู้สร้างงบประมาณสามารถกดอนุมัติรายการของตนเองได้ และประวัติ Audit Trail อาจถูกแก้ไขในฐานข้อมูลได้",
+        solution: "1) ปรับปรุง Active Choice ใน JenkinsfilesPhase2 และ mft-shared-library ให้แสดงข้อความ Error จาก Log โดยตรงเมื่อดึงข้อมูลล้มเหลว 2) บังคับใช้กฎ Maker-Checker ป้องกันการอนุมัติรายการตนเอง 100% และสร้างระบบสายโซ่รหัสพยานหลักฐาน SHA-256 Hash-Chained Audit Trail",
+        days: [
+          { date: "2026-09-21", day: "จ.", proj: "MFT-Pipeline", title: "ปรับการแสดงผล Error ใน Active Choice ของ MFT Pipeline และบังคับใช้กฎ Maker-Checker ใน FITs", result: "หน้า Jenkins UI แสดงสาเหตุจาก Log เมื่อดึงข้อมูลล้มเหลว และป้องกันผู้อนุมัติงบตนเองใน FITs" },
+          { date: "2026-09-22", day: "อ.", proj: "MFT-Pipeline", title: "จัดทำรายงานสหกิจฯ MFT-Pipeline บทที่ 5-6 และพัฒนาระบบ BGID / SHA-256 Audit ใน FITs", result: "ได้เอกสารรายงาน 08-Chapter5.md และ 09-Chapter6.md พร้อมระบบตรวจสอบสายโซ่ Hash ใน FITs" },
+          { date: "2026-09-23", day: "พ.", proj: "FITs", title: "พัฒนาหน้า Catalog & GL, โครงสร้างรายการย่อย (Structure B) และแปลงไฟล์รายงานสหกิจฯ เป็น Word", result: "รองรับการแจกแจงรายการย่อยพร้อมผู้นำเข้า Excel ปีเก่า และได้ไฟล์รายงาน .docx ครบทั้ง 6 บท" },
+          { date: "2026-09-24", day: "พฤ.", proj: "FITs", title: "ตั้งค่า Repository หลักของโปรเจกต์ FITs และจัดทำเอกสาร PRD พร้อมแผนภาพ Workflow", result: "ได้ Repository กลางและเอกสาร PRD 2 ภาษา (ไทย/อังกฤษ) ที่ตรงกับหน้าจอต้นแบบ" },
+          { date: "2026-09-25", day: "ศ.", proj: "FITs", title: "พัฒนาฟีเจอร์จัดหมวดหมู่ 2 ระดับ (#8), คัดลอกข้ามปี (#10), Sticky Grid (#11) และแนบไฟล์ (#13)", result: "ส่งมอบฟีเจอร์หลักของ Epic 1 ครบถ้วน สามารถแนบใบเสนอราคาและคัดลอกงบข้ามปีได้" }
+        ]
+      },
+      {
+        week: 14,
+        range: "28 ก.ย. – 2 ต.ค. 2026",
+        assigned: "พัฒนาระบบอนุมัติงบประมาณระดับผู้บริหาร (CIO Sign-off), หน้า Dashboard วิเคราะห์ข้อมูลการเงิน, ฟีเจอร์ส่งออกข้อมูลเชื่อมต่อระบบบัญชี Dynamics 365 GL และปรับแต่งคอนเทนเนอร์ให้รองรับมาตรฐาน OpenShift",
+        outcome: "ส่งมอบระบบอนุมัติงบประมาณระดับ CIO, หน้า Dashboard วิเคราะห์ KPI ทางการเงิน 5 ตัวชี้วัด, การส่งออกไฟล์เชื่อมต่อบัญชี Dynamics 365 GL และปรับแต่งคอนเทนเนอร์ FITs ให้รันแบบ Non-root บน OpenShift พร้อมชุดทดสอบ E2E",
+        problem: "1) คอนเทนเนอร์ Backend ของ FITs ติดปัญหาสิทธิ์การรันแบบ Non-root บน OpenShift และไฟล์ Dockerfile วางอยู่นอกโฟลเดอร์ Fits.Api ทำให้ไปป์ไลน์ค้นหาไม่พบ 2) การส่งออกไฟล์ Excel ขาดคอลัมน์ทางการเงินสำคัญ (Cost Center, GL Account, Capex/Opex) และเมื่อกด Sign-out ในโหมด SSO เซิร์ฟเวอร์ยังไม่ทำลาย Session",
+        solution: "1) ย้าย Dockerfile เข้าสู่ Fits.Api ปรับคอนเทนเนอร์ให้รันด้วย Non-root UID และตั้งค่า ForwardedHeaders สำหรับ Proxy บน OpenShift 2) ผูกฟิลด์ CostCenter, GLAccount และ ExpenditureType เข้ากับ DTO และการส่งออก Excel รวมถึงแก้ไข /auth/logout ให้ทำลาย Server Session ทันที",
+        days: [
+          { date: "2026-09-28", day: "จ.", proj: "FITs", title: "พัฒนาฟีเจอร์ส่งกลับแก้ไข (#15), อนุมัติระดับ CIO (#16), SignalR Presence (#17) และ E2E Tests", result: "ส่งมอบฟีเจอร์การอนุมัติใน Epic 2 พร้อมผ่านการทดสอบ E2E Integration Tests ทุกข้อ" },
+          { date: "2026-09-29", day: "อ.", proj: "FITs", title: "บูรณาการระบบ Dashboard วิเคราะห์ข้อมูล (Epic 4), ระบบ Governance (Epic 6) และ Settings API", result: "ระบบแสดงผล KPI ทางการเงิน 5 ตัวชี้วัด และตั้งค่าพารามิเตอร์ผ่านหน้าผู้ดูแลระบบได้" },
+          { date: "2026-09-30", day: "พ.", proj: "FITs", title: "ปรับ Container ให้รันแบบ Non-root บน OpenShift (#58), ส่งออก Dynamics 365 GL (#61) และแก้ไขส่งใหม่ (#71)", result: "อิมเมจผ่านเกณฑ์ความปลอดภัย OpenShift และส่งออกข้อมูลเชื่อมต่อระบบบัญชี ERP ได้" },
+          { date: "2026-10-01", day: "พฤ.", proj: "FITs", title: "ย้าย Dockerfile เข้าสู่ Fits.Api (#82) และปรับปรุงการตรวจสอบรหัส Cost Center / GL (#73)", result: "โครงสร้างการ Build ตรงตามมาตรฐานไปป์ไลน์ และป้องกันการบันทึกรหัสบัญชีที่ไม่ถูกต้อง" },
+          { date: "2026-10-02", day: "ศ.", proj: "FITs", title: "ทดสอบและปรับแต่งการรัน Container ภายใต้ข้อจำกัดของ OpenShift Pod และตรวจสอบ DB Startup", result: "คอนเทนเนอร์ API และ Web ทำงานได้เสถียรภายใต้ข้อจำกัดหน่วยความจำและสิทธิ์ของ OpenShift" }
+        ]
+      },
+      {
+        week: 15,
+        range: "5 – 9 ต.ค. 2026",
+        assigned: "เชื่อมต่อระบบล็อกอินกลางของธนาคาร (AAA OIDC SSO), พัฒนาฟีเจอร์ปฏิเสธคำขอพร้อมระบุเหตุผล (#137), ปรับปรุงการรองรับ Accessibility และจัดทำคู่มือพร้อมดำเนินการตรวจทานโค้ด (Code Review) สำหรับ MR !190–!205",
+        outcome: "เชื่อมต่อระบบล็อกอิน AAA OIDC SSO ของธนาคารเข้ากับ Web/API Image สำเร็จ, พัฒนาฟีเจอร์ปฏิเสธคำขอพร้อมระบุเหตุผล (#137), ปรับปรุง Accessibility และจัดทำเอกสารพร้อมตรวจทานโค้ด (Human Review) ครบ 16 Merge Requests (!190–!205)",
+        problem: "1) เมื่อล็อกอินผ่านระบบ AAA OIDC SSO ของธนาคาร ในบางกรณี id_token ไม่มีข้อมูล Role แนบมาด้วย ทำให้ผู้ใช้เข้าใช้งานไม่ได้ และขนาด Session Cookie ใหญ่เกินไป 2) หน้าต่างกดปฏิเสธคำขอ (Reject Sheet) ในคิวอนุมัติไม่แสดงยอดเงินรวม และปุ่มกดตัดสินใจ 3 ปุ่มล้นขอบหน้าจอบนอุปกรณ์พกพา",
+        solution: "1) ดึงข้อมูล Role จาก userinfo Endpoint เมื่อไม่พบใน id_token, แปลงสิทธิ์ FITS_REQUESTER, ลดขนาด Cookie ให้เก็บเฉพาะ sub, name, role, team_code และคืนค่า 502 พร้อมบันทึก Audit เมื่อระบบ AAA ขัดข้อง 2) ปรับปรุงหน้าต่าง Reject with Reason (#137) ให้แสดงยอดเงินและเหตุผลชัดเจน พร้อมจัดเรียงแถบปุ่มใหม่ให้รองรับหน้าจอขนาดเล็กและคีย์บอร์ด",
+        days: [
+          { date: "2026-10-05", day: "จ.", proj: "FITs", title: "ตั้งค่าการสร้าง Web Image สำหรับใช้งานจริงกับระบบ AAA OIDC SSO (#150, #151, #155)", result: "เชื่อมต่อระบบล็อกอิน AAA ของธนาคารสำเร็จ พร้อมแปลงสิทธิ์และบันทึก Audit เมื่อล็อกอินล้มเหลว" },
+          { date: "2026-10-06", day: "อ.", proj: "FITs", title: "ตรวจสอบการทำงานของระบบตามบทบาทผู้ใช้งาน (Role-flow Walk) บนเวอร์ชัน 0.19.1 (#160)", result: "ยืนยันความถูกต้องของการทำงานในทุกบทบาทและตัวเลขบนหน้า Dashboard ตรงตามจริง" },
+          { date: "2026-10-07", day: "พ.", proj: "FITs", title: "พัฒนาฟีเจอร์ปฏิเสธคำขอพร้อมระบุเหตุผล (#137) และปรับปรุง Accessibility/i18n (#158)", result: "สามารถกด Reject พร้อมระบุเหตุผลจากคิวอนุมัติได้ทันที และรองรับการใช้งานผ่านคีย์บอร์ดครบถ้วน" },
+          { date: "2026-10-08", day: "พฤ.", proj: "FITs", title: "จัดทำเอกสารคู่มือสำหรับการตรวจสอบโค้ด (Reviewer Guides) ของ MR !190 ถึง !205", result: "ได้เอกสารสรุปจุดเปลี่ยนแปลงและวิธีทดสอบสำหรับผู้ตรวจทานโค้ดครบทั้ง 16 Merge Requests" },
+          { date: "2026-10-09", day: "ศ.", proj: "FITs", title: "ดำเนินการตรวจสอบโค้ด (Human Review) สำหรับ MR !190-!205 และปรับปรุงแถบปุ่มบนหน้าจอเล็ก", result: "บันทึกผลการตรวจทานโค้ดครบถ้วน และปุ่มกดอนุมัติแสดงผลไม่ตกขอบบนทุกขนาดหน้าจอ" }
+        ]
+      },
+      {
+        week: 16,
+        range: "12 – 16 ต.ค. 2026 (หยุด 13 ต.ค. วันนวมินทรมหาราช)",
+        assigned: "พัฒนากลไกป้องกันการส่งคำสั่งอนุมัติซ้ำซ้อนเมื่อเครือข่ายขัดข้อง, ปรับปรุงหน้าจัดการข้อมูลหลัก (Master Parameters Catalog / สถานะโครงการ IPO / หน้า Audit UI) และปรับปรุงชุดทดสอบ E2E พร้อมเอกสารสถาปัตยกรรม",
+        outcome: "พัฒนาระบบป้องกันการส่งคำสั่งอนุมัติซ้ำซ้อนเมื่อเครือข่ายขัดข้อง, ปรับปรุงหน้า Master Parameters Catalog / สถานะโครงการ IPO / หน้า Audit UI และอัปเดตชุดทดสอบ E2E พร้อมเอกสารสถาปัตยกรรมให้ตรงกับสายหลัก 100%",
+        problem: "1) เมื่อเครือข่ายขัดข้องระหว่างกดอนุมัติหรือปฏิเสธคำขอ ผู้ใช้สามารถกดส่งคำสั่งซ้ำซ้อนได้โดยไม่ทราบว่าเซิร์ฟเวอร์รับคำสั่งไปแล้วหรือยัง 2) การค้นหารายชื่อในหน้าทะเบียนบุคลากร (Person Register) แยกตัวพิมพ์เล็ก-ใหญ่ และเอกสารสถาปัตยกรรมบางส่วนคลาดเคลื่อนจากโค้ดจริงหลังการรวมโค้ด Group 3",
+        solution: "1) พัฒนากลไกป้องกันการส่งคำสั่งซ้ำและแสดงสถานะ not confirmed เมื่อยังไม่ได้รับผลยืนยันจากเซิร์ฟเวอร์ (#137) 2) ปรับระบบค้นหาให้เป็นแบบ Case-insensitive แสดงเวลาตามเขตเวลาประเทศไทย และอัปเดตเอกสาร Data Model, SignalR Events และ Audit Hash Chain ให้ตรงกับโค้ดจริง 100%",
+        days: [
+          { date: "2026-10-12", day: "จ.", proj: "FITs", title: "พัฒนาระบบป้องกันการตัดสินใจซ้ำเมื่อยังไม่ได้รับผลยืนยันจากเซิร์ฟเวอร์ (#137)", result: "แสดงสถานะ not confirmed เมื่อการเชื่อมต่อขาดหาย และป้องกันการส่งคำสั่งอนุมัติซ้ำซ้อน" },
+          { date: "2026-10-14", day: "พ.", proj: "FITs", title: "อัปเดตชุดทดสอบ E2E และรูปภาพประกอบเอกสารหลังจากการรวมโค้ดเข้ากับสายหลัก (#158)", result: "ชุดทดสอบ E2E ทั้งหมดทำงานผ่านบนโค้ดล่าสุดของสายหลัก พร้อมรูปภาพหลักฐานครบถ้วน" },
+          { date: "2026-10-15", day: "พฤ.", proj: "FITs", title: "ปรับปรุงระบบ Catalog, สถานะโครงการ IPO, ความปลอดภัย Session Claims และหน้า Audit UI", result: "จัดการสถานะโครงการ Active/Archived ได้ และจำกัดข้อมูลใน Session Cookie เฉพาะที่จำเป็น" },
+          { date: "2026-10-16", day: "ศ.", proj: "FITs", title: "ปรับปรุงหน้า Master Parameters Catalog (#136), Settings และอัปเดตเอกสารสถาปัตยกรรม", result: "แก้ไข/ลบข้อมูลหลักพร้อมระบุเหตุผลได้ และเอกสารสถาปัตยกรรมตรงกับโค้ดปัจจุบัน 100%" }
+        ]
+      },
+      {
+        week: 17,
+        range: "19 ต.ค. 2026",
+        assigned: "ปรับปรุงการแสดงผลตารางทะเบียนงบประมาณ (Budget Register #197) ให้รองรับทั้งหน้าจอคอมพิวเตอร์และโทรศัพท์มือถือ รวมถึงแก้ไขตรรกะการแสดงสีสถานะยอดเงินคงเหลือ (#221)",
+        outcome: "ปรับปรุงตารางทะเบียนงบประมาณ (Budget Register #197) ให้อ่านง่ายทั้งบนหน้าจอ 1440px และมือถือ พร้อมแก้ไขการแสดงผลสีสถานะยอดเงินคงเหลือ (#221) และผ่านการทดสอบ Browser E2E Spec ครบถ้วน",
+        problem: "ตารางทะเบียนงบประมาณ (Budget Register) อ่านยากบนหน้าจอขนาด 1440px และโทรศัพท์มือถือ ปุ่มเครื่องมือซ้อนทับกัน และสีสถานะยอดเงินคงเหลือแสดงผลไม่ตรงตามเงื่อนไข (#197, #221)",
+        solution: "ปรับปรุงเลย์เอาต์ตาราง Budget Register ใหม่ เพิ่มแถบแจ้งเตือนการเลื่อนตาราง (Scroll Cue) ตรึงคอลัมน์ Action แสดงเหตุผลเมื่อปุ่มถูกปิดใช้งาน และแก้ไขตรรกะการแสดงสีสถานะยอดเงินคงเหลือให้ถูกต้อง",
+        days: [
+          { date: "2026-10-19", day: "จ.", proj: "FITs", title: "แก้ไขการแสดงผลสีสถานะยอดเงินคงเหลือ (#221) และปรับปรุงตาราง Budget Register (#197)", result: "แสดงสีสถานะยอดเงินคงเหลือถูกต้อง และตารางอ่านง่ายทั้งบนหน้าจอ 1440px และโทรศัพท์มือถือ" }
+        ]
+      }
+    ];
+
+    let activeMonth = "ALL";
+    let activeProj = "ALL";
+    let activeView = "ALL";
+    let searchQuery = "";
+
+    function getBadgeClass(proj) {
+      if (proj === "MFT-Pipeline") return "badge badge-mft";
+      if (proj === "K8s Lab") return "badge badge-k8s";
+      if (proj === "Onboarding App") return "badge badge-ocp";
+      return "badge badge-fits";
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("logBody");
+      tbody.innerHTML = "";
+
+      let dayCounter = 0;
+      let shownWeeks = 0;
+      const q = searchQuery.trim().toLowerCase();
+
+      WEEKS_DATA.forEach(weekObj => {
+        const matchedDays = weekObj.days.filter(item => {
+          const matchMonth = activeMonth === "ALL" || item.date.startsWith(activeMonth);
+          const matchProj = activeProj === "ALL" || item.proj === activeProj;
+          const matchSearch = !q ||
+            item.date.toLowerCase().includes(q) ||
+            item.title.toLowerCase().includes(q) ||
+            item.result.toLowerCase().includes(q) ||
+            item.proj.toLowerCase().includes(q) ||
+            weekObj.assigned.toLowerCase().includes(q) ||
+            weekObj.outcome.toLowerCase().includes(q) ||
+            weekObj.problem.toLowerCase().includes(q) ||
+            weekObj.solution.toLowerCase().includes(q) ||
+            weekObj.range.toLowerCase().includes(q);
+          return matchMonth && matchProj && matchSearch;
+        });
+
+        if (matchedDays.length === 0) return;
+        shownWeeks++;
+
+        // Week header row
+        const wRow = document.createElement("tr");
+        wRow.className = "week-header-row";
+        const wCell = document.createElement("td");
+        wCell.colSpan = 6;
+        wCell.textContent = `สัปดาห์ที่ ${weekObj.week} (${weekObj.range})`;
+        wRow.appendChild(wCell);
+        tbody.appendChild(wRow);
+
+        // Daily rows
+        if (activeView !== "WEEKS_ONLY") {
+          matchedDays.forEach(item => {
+            dayCounter++;
+            const tr = document.createElement("tr");
+            tr.className = "day-row";
+            tr.innerHTML = `
+              <td class="col-no">${dayCounter}</td>
+              <td class="col-date">${item.date}</td>
+              <td class="col-day">${item.day}</td>
+              <td class="col-proj"><span class="${getBadgeClass(item.proj)}">${item.proj}</span></td>
+              <td class="col-task">${item.title}</td>
+              <td class="col-result">${item.result}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        } else {
+          dayCounter += matchedDays.length;
+        }
+
+        // Weekly assigned, outcome, problem & solution row
+        if (activeView !== "DAYS_ONLY") {
+          const sRow = document.createElement("tr");
+          sRow.className = "week-summary-row";
+          const sCell = document.createElement("td");
+          sCell.colSpan = 6;
+          sCell.innerHTML = `
+            <div class="week-issue-grid">
+              <div class="assign-box">
+                <span class="box-label-assign">งานที่ได้รับมอบหมายประจำสัปดาห์ที่ ${weekObj.week}:</span>
+                <div>${weekObj.assigned}</div>
+              </div>
+              <div class="outcome-box">
+                <span class="box-label-outcome">ผลการปฏิบัติงานประจำสัปดาห์ที่ ${weekObj.week}:</span>
+                <div>${weekObj.outcome}</div>
+              </div>
+              <div class="issue-box">
+                <span class="box-label-issue">ปัญหาที่พบในสัปดาห์ที่ ${weekObj.week}:</span>
+                <div>${weekObj.problem}</div>
+              </div>
+              <div class="fix-box">
+                <span class="box-label-fix">แนวทางการแก้ไข:</span>
+                <div>${weekObj.solution}</div>
+              </div>
+            </div>
+          `;
+          sRow.appendChild(sCell);
+          tbody.appendChild(sRow);
+        }
+      });
+
+      document.getElementById("countText").textContent = `แสดง ${dayCounter} วันทำการ (${shownWeeks} สัปดาห์)`;
+    }
+
+    document.getElementById("monthFilters").addEventListener("click", e => {
+      if (e.target.tagName === "BUTTON") {
+        document.querySelectorAll("#monthFilters .pill").forEach(b => b.classList.remove("active"));
+        e.target.classList.add("active");
+        activeMonth = e.target.getAttribute("data-month");
+        renderTable();
+      }
+    });
+
+    document.getElementById("projFilters").addEventListener("click", e => {
+      if (e.target.tagName === "BUTTON") {
+        document.querySelectorAll("#projFilters .pill").forEach(b => b.classList.remove("active"));
+        e.target.classList.add("active");
+        activeProj = e.target.getAttribute("data-proj");
+        renderTable();
+      }
+    });
+
+    document.getElementById("viewFilters").addEventListener("click", e => {
+      if (e.target.tagName === "BUTTON") {
+        document.querySelectorAll("#viewFilters .pill").forEach(b => b.classList.remove("active"));
+        e.target.classList.add("active");
+        activeView = e.target.getAttribute("data-view");
+        renderTable();
+      }
+    });
+
+    document.getElementById("searchInput").addEventListener("input", e => {
+      searchQuery = e.target.value;
+      renderTable();
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", () => {
+      const lines = [];
+      let idx = 0;
+      WEEKS_DATA.forEach(w => {
+        lines.push(`=== สัปดาห์ที่ ${w.week} (${w.range}) ===`);
+        lines.push(`งานที่ได้รับมอบหมาย (สัปดาห์ที่ ${w.week}): ${w.assigned}`);
+        lines.push(`ลำดับ\tวันที่\tวัน\tโปรเจกต์\tงานที่ได้รับมอบหมายรายวัน\tผลการปฏิบัติงาน`);
+        w.days.forEach(item => {
+          idx++;
+          lines.push(`${idx}\t${item.date}\t${item.day}\t${item.proj}\t${item.title}\t${item.result}`);
+        });
+        lines.push(`ผลการปฏิบัติงาน (สัปดาห์ที่ ${w.week}): ${w.outcome}`);
+        lines.push(`ปัญหาที่พบ (สัปดาห์ที่ ${w.week}): ${w.problem}`);
+        lines.push(`การแก้ไข (สัปดาห์ที่ ${w.week}): ${w.solution}`);
+        lines.push("");
+      });
+      navigator.clipboard.writeText(lines.join("\n")).then(() => {
+        const btn = document.getElementById("copyBtn");
+        const orig = btn.textContent;
+        btn.textContent = "คัดลอกแล้ว";
+        setTimeout(() => { btn.textContent = orig; }, 1500);
+      });
+    });
+
+    renderTable();
+  </script>
+</body>
+</html>

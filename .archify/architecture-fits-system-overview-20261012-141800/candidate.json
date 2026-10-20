@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "FITs System Overview",
+    "output": ".archify/architecture-fits-system-overview-20261012-141800/fits-architecture.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "git@gitlab.tcbank.local:cto/it-budget/fits.git",
+      "revision": "51683b4da656b015607d388067040b61ad341e94",
+      "link_mode": "local-only"
+    }
+  },
+  "components": [
+    {
+      "id": "clients",
+      "type": "external",
+      "label": "Bank IT Users",
+      "sublabel": "11 Depts & Approvers",
+      "icon": "person",
+      "pos": [40, 280],
+      "size": [130, 60],
+      "sources": [
+        { "path": "PRODUCT.md", "line": 9, "end_line": 16, "label": "User Roles" }
+      ]
+    },
+    {
+      "id": "ingress",
+      "type": "cloud",
+      "label": "F5 / Ingress LB",
+      "sublabel": "HTTPS :443 Perimeter",
+      "pos": [240, 280],
+      "size": [140, 60],
+      "tag": "Cluster Edge",
+      "sources": [
+        { "path": "docs/DEPLOY_ON_PREM.md", "line": 7, "end_line": 25, "label": "Ingress Topology" }
+      ]
+    },
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "Frontend SPA",
+      "sublabel": "React 18 + Nginx :8080",
+      "pos": [440, 280],
+      "size": [140, 60],
+      "sources": [
+        { "path": "frontend/src/shell/FitsShell.tsx", "line": 1, "end_line": 35, "label": "Shell SPA" },
+        { "path": "docker-compose.yml", "line": 115, "end_line": 145, "label": "Web Container" }
+      ]
+    },
+    {
+      "id": "adfs",
+      "type": "security",
+      "label": "TCRB Enterprise AAA",
+      "sublabel": "ADFS SSO (OIDC/SAML)",
+      "pos": [660, 120],
+      "size": [140, 60],
+      "tag": "JWT Bearer",
+      "sources": [
+        { "path": "backend/Fits.Api/Authentication/AccessResolutionService.cs", "line": 15, "end_line": 35, "label": "AAA Resolution" }
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Backend Web API",
+      "sublabel": ".NET 10 Web API :8080",
+      "pos": [660, 280],
+      "size": [140, 60],
+      "tag": "Non-Root",
+      "sources": [
+        { "path": "backend/Fits.Api/Program.cs", "line": 40, "end_line": 70, "label": "API Startup" },
+        { "path": "docker-compose.yml", "line": 41, "end_line": 80, "label": "API Container" }
+      ]
+    },
+    {
+      "id": "pvc",
+      "type": "database",
+      "label": "Attachments Storage",
+      "sublabel": "fits-attachments PVC",
+      "pos": [660, 440],
+      "size": [140, 60],
+      "tag": "Persistent",
+      "sources": [
+        { "path": "docker-compose.yml", "line": 22, "end_line": 39, "label": "Attachments Volume" }
+      ]
+    },
+    {
+      "id": "erp",
+      "type": "external",
+      "label": "Dynamics 365 F&O",
+      "sublabel": "Manual Excel/CSV Export",
+      "pos": [880, 120],
+      "size": [150, 60],
+      "tag": "ERP Handoff",
+      "sources": [
+        { "path": "backend/Fits.Api/Services/DynamicsExportService.cs", "line": 27, "end_line": 50, "label": "D365 Export" }
+      ]
+    },
+    {
+      "id": "workflow",
+      "type": "backend",
+      "label": "Workflow & Rules",
+      "sublabel": "6-Stage Engine & BGID",
+      "pos": [880, 280],
+      "size": [150, 60],
+      "sources": [
+        { "path": "backend/Fits.Api/Services/WorkflowService.cs", "line": 13, "end_line": 35, "label": "Workflow Service" },
+        { "path": "backend/Fits.Api/Services/ReferenceNumberService.cs", "line": 10, "end_line": 35, "label": "BGID Generator" }
+      ]
+    },
+    {
+      "id": "db",
+      "type": "database",
+      "label": "PostgreSQL 16 HA",
+      "sublabel": "fits database :5432",
+      "pos": [1100, 280],
+      "size": [140, 60],
+      "tag": "Encrypted",
+      "sources": [
+        { "path": "backend/Fits.Api/Data/BudgetDbContext.cs", "line": 6, "end_line": 35, "label": "DbContext" },
+        { "path": "backend/Fits.Api/Data/DatabaseConfiguration.cs", "line": 8, "end_line": 35, "label": "DB Config" }
+      ]
+    },
+    {
+      "id": "audit",
+      "type": "backend",
+      "label": "BOT Audit Service",
+      "sublabel": "SHA-256 Hash Chain",
+      "pos": [880, 440],
+      "size": [150, 60],
+      "tag": "10-Yr Compliance",
+      "sources": [
+        { "path": "backend/Fits.Api/Services/AuditService.cs", "line": 15, "end_line": 35, "label": "BOT Hash Chain" }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "OpenShift On-Premises Cluster",
+      "wraps": ["ingress", "web", "api", "pvc", "workflow", "audit", "db"],
+      "pad": 24
+    },
+    {
+      "kind": "security-group",
+      "label": "FITs Core Workload Subnet",
+      "wraps": ["web", "api", "pvc", "workflow", "audit", "db"],
+      "pad": 16
+    }
+  ],
+  "connections": [
+    { "id": "clients-to-ingress", "from": "clients", "to": "ingress", "label": "HTTPS :443", "variant": "emphasis" },
+    { "id": "ingress-to-web", "from": "ingress", "to": "web", "label": "HTTP :8080" },
+    { "id": "web-to-api", "from": "web", "to": "api", "label": "proxy /api" },
+    { "id": "adfs-to-api", "from": "adfs", "to": "api", "label": "OIDC / Bearer", "variant": "security", "fromSide": "bottom", "toSide": "top" },
+    { "id": "api-to-pvc", "from": "api", "to": "pvc", "label": "volume mount", "variant": "dashed", "fromSide": "bottom", "toSide": "top" },
+    { "id": "api-to-workflow", "from": "api", "to": "workflow", "label": "action dispatch", "variant": "emphasis" },
+    { "id": "workflow-to-erp", "from": "workflow", "to": "erp", "label": "export journal", "variant": "dashed", "fromSide": "top", "toSide": "bottom" },
+    { "id": "workflow-to-db", "from": "workflow", "to": "db", "label": "EF Core / SQL", "variant": "emphasis" },
+    { "id": "workflow-to-audit", "from": "workflow", "to": "audit", "label": "audit event", "fromSide": "bottom", "toSide": "top" },
+    { "id": "audit-to-db", "from": "audit", "to": "db", "label": "append chain", "variant": "security", "fromSide": "right", "toSide": "bottom" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Runtime Architecture",
+      "items": [
+        "React 18 SPA served by Nginx container on OpenShift (:8080)",
+        "ASP.NET Core 10 Web API handling business rules & SignalR presence",
+        "PostgreSQL 16 HA Cluster with EF Core migrations as source of truth"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Governance & Workflows",
+      "items": [
+        "Immutable BGID reference keys (YY[Team][NNN]) with PostgreSQL row lock",
+        "6-stage approval lifecycle with team isolation & universal admin reopen",
+        "Strategic 4-tier budget cut waterfall with 90% floor protection for BAU"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Security & Compliance",
+      "items": [
+        "BOT 10-year immutable audit log with SHA-256 hash chaining",
+        "TCRB Enterprise AAA / ADFS SSO with role-based claim mapping",
+        "Non-root container baseline with read-only root filesystems"
+      ]
+    }
+  ]
+}

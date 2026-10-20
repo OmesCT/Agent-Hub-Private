@@ -1,0 +1,1 @@
+[OMA:balanced:idle | ralph:PASS | tasks:0/0 | g-3.8-flash | git:no-git | ctx:ok]
