@@ -9,7 +9,7 @@
 ```
 Agent-Learning/
 ├── README.md                      # เอกสารคู่มือและการอธิบายระบบทั้งหมด
-├── skills/                        # สกิลทั้งหมดจาก FITs และ Claude (98+ สกิล)
+├── skills/                        # สกิลทั้งหมดจาก FITs, Claude และ Antigravity (200+ สกิล)
 │   ├── bmad-*                     # BMAD Framework Core & Extensions (32 สกิล)
 │   ├── bmad-cis-*                 # Creative Innovation Suite (8 สกิล)
 │   ├── bmad-testarch-*            # Test Architecture Suite (9 สกิล)
@@ -37,7 +37,7 @@ Agent-Learning/
 
 จากการนำสกิลและปลั๊กอินของ FITs มาประมวลผล Antigravity ได้รับการอัปเกรดโดยตรงในระบบ:
 
-1. **ติดตั้งสกิลระดับ Global ครบ 180 สกิล** ใน `~/.gemini/config/skills/`:
+1. **ติดตั้งสกิลระดับ Global ครบ 200+ สกิล** ใน `~/.gemini/config/skills/`:
    - สกิลสาย BMAD CIS (Creative Innovation), TestArch (Test Automation), GDS (Game/App Design) และ OMC Engineering Skills
 2. **เพิ่ม 8 Subagents ใหม่** ใน `~/.gemini/config/plugins/oh-my-antigravity/agents/`:
    - `oma-code-simplifier`: ตัดโค้ดซ้ำซ้อน ลดความซับซ้อนโดยคงพฤติกรรมเดิม 100%

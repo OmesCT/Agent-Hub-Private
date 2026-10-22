@@ -1,153 +1,67 @@
 ---
 name: computer-use
-description: >-
-  Drives the GUI of a visible local app window through `orca computer`: accessibility
-  tree, clicks, typing, menus, dialogs, and screenshots in native apps and external
-  browser windows (Chrome, Edge, Safari) or webviews. Prefer a programmatic path
-  (shell, filesystem, git, HTTP, existing CLIs) whenever it can complete the task.
-  Use only when a visible window needs GUI control those cannot reach. Do not use
-  for Orca's embedded browser (`orca-cli`).
+description: "Read this skill before the first step of any request to do something in an app on the person's own computer (Notes, Finder, System Settings, any desktop app), to look at their screen, or for \"computer use\". Computer use (desktop control) lets Claude take screenshots of the person's desktop and control it with clicks, typing and scrolling through the Claude desktop app; its tools are named mcp__computer-use__* when the session runs in the desktop app and mcp__remote-devices__computer_* when a cloud session is linked to the person's computer; before computer use is turned on for a conversation there may be no such tools, only an enable__mcp__remote-devices__computer tool, which turns it on. It covers turning it on, picking the right tool, the access flow, and the safety rules for tiered apps, links and financial actions. It is not for websites, which go through Claude in Chrome or the built-in browser and their own skills."
+compatibility: "Cowork in the Claude desktop app, and Cowork Remote or upgraded claude.ai sessions linked to a computer running the desktop app (macOS or Windows) with Computer use turned on"
+license: Proprietary. LICENSE.txt has complete terms
 ---
 
-# Computer Use
+# Computer use (desktop control)
 
-Use this skill to drive a visible app window through `orca computer`. Prefer a programmatic path (shell, filesystem, git, HTTP, existing CLIs) whenever it can complete the task; use this skill only when a visible window needs GUI control those cannot reach. Do not use it for Orca's embedded browser (`orca-cli`).
+Computer use lets Claude take screenshots of the person's desktop and control it with mouse clicks, keyboard input, and scrolling, through the Claude desktop app. Its tools are named `mcp__computer-use__*` (for example `request_access`, `screenshot`) when the session runs inside the desktop app, and `mcp__remote-devices__computer_*` (for example `computer_request_access`, `computer_screenshot`) when the session runs in the cloud and is linked to the person's computer. Computer use works only while Computer use is turned on in the Claude desktop app (Settings → This computer → Computer use; it is off by default).
 
-## Preconditions
+## Turning computer use on from a chat
 
-- `ORCA` is a placeholder for the executable you resolved in the stub; substitute it before running.
-- Prefer `--json`; see Screenshots below for image output.
-- Do not push, submit forms, send messages, buy items, delete data, change account settings, or expose secrets unless the user explicitly asked for that action.
-- If an app contains sensitive content, read only what the user requested.
+What Claude does first depends on which tools are present (loaded or deferred):
 
-```text
-ORCA computer capabilities --json
-```
+1. **Computer-use tools are present.** Claude goes straight to the access flow below.
+2. **No computer-use tools, but an `enable__mcp__remote-devices__computer` tool is present.** Claude calls that tool once, before any other step of the task, with the task in its `task` field. When the call goes through, the `mcp__remote-devices__computer_*` tools arrive with it and Claude starts with the access flow below; there is no second enable step. If it does not go through, Claude relays the reason in one line and carries on with what it can do in the conversation.
+3. **Neither.** Computer use is not available in this conversation as it stands, and Claude says so plainly without diagnosing why: in general Claude can use apps on a computer where the Claude desktop app is installed and signed in with Computer use turned on, and on claude.ai in a web browser, if the composer's + menu offers Devices, the person can pick their computer there before sending a new message. Claude does not pretend to act.
 
-## Core Loop
+## Separate filesystems
 
-```text
-ORCA computer list-apps --json
-ORCA computer get-app-state --app com.spotify.client --json
-ORCA computer click --app com.spotify.client --element-index 42 --json
-```
+Computer-use actions (clicks, typing, clipboard writes) happen on the person's real computer, a different system from wherever Claude's own shell and files are, when it has them. Files Claude creates on its side do not exist on the person's machine. If Claude puts a command or file path in the person's clipboard, or types into one of their apps, the path must exist on their computer, not a path on Claude's side that they can't reach.
 
-Use the fresh state returned by each action for the next element index. Element indexes are the numeric labels shown in the tree; they may be sparse when noisy sections are omitted, so never infer valid indexes from `elementCount` or "Visible elements." Element indexes are short-lived and go stale after delays, navigation, focus changes, scrolling, window changes, or app re-rendering.
+## Pick the right tool for the app
 
-In `--json` output, read the accessibility tree and action indexes from `result.snapshot.treeText`; `elementCount` is only a count and must not be used to infer indexes.
+Each tier trades speed/precision against coverage:
 
-## App Selectors
+1. **Dedicated MCP for the app**: if the task is in an app that has its own MCP (Slack, Gmail, Calendar, Linear, etc.) and that MCP is connected, Claude uses it. API-backed tools are fast and precise.
+2. **Browser tools**: if the target is a web app and there's no dedicated MCP for it, Claude uses a browser: Claude in Chrome (tools named `mcp__claude-in-chrome__*`) or the built-in browser (tools named `mcp__Claude_Browser__*` in the desktop app, `mcp__remote-devices__Claude_Browser__*` when a cloud session is linked to the person's computer). Both are DOM-aware, much faster than clicking pixels. If this prompt has a `<browsers>` section, Claude follows it on which browser to use; otherwise it uses whichever one is connected. If neither is connected, Claude asks the person to connect one rather than falling through to computer use.
+3. **Computer use**: for native desktop apps (Maps, Notes, Finder, Photos, System Settings, any third-party native app) and cross-app workflows. Computer use is the right tool here; Claude does not decline a native-app task just because there's no dedicated MCP for it.
 
-Prefer bundle IDs from `list-apps`; names are acceptable when unambiguous. Use `pid:<number>` only when bundle ID or name matching is ambiguous.
+This is about what's available, not error handling: if a dedicated MCP tool errors, Claude debugs or reports it rather than silently retrying via a slower tier.
 
-```text
-ORCA computer get-app-state --app com.microsoft.edgemac --json
-ORCA computer get-app-state --app Spotify --json
-ORCA computer get-app-state --app pid:12345 --json
-```
+## Look before asserting
 
-For apps with multiple windows or ambiguous titles, run `list-windows` first. Prefer `--window-id <id>` when the listed id is not `none`; otherwise use `--window-index <n>`. Once you choose a window, pass the same selector to `get-app-state` and later actions until the target window changes.
+If the person asks about app state (what's open, what's connected, what an app can do), Claude takes a screenshot and checks before answering. Claude does not answer from memory: the person's setup or app version may differ from what it expects. If Claude is about to say an app doesn't support an action, that claim should be grounded in what it just saw on screen, not general knowledge. Similarly, `list_granted_applications` or a fresh `screenshot` is cheaper than a wrong assertion about what's running.
 
-## Commands
+## Loading via ToolSearch
 
-```text
-ORCA computer permissions --json
-ORCA computer capabilities --json
-ORCA computer list-apps --json
-ORCA computer list-windows --app <app> --json
-ORCA computer get-app-state --app <app> --json
-ORCA computer get-app-state --app <app> --restore-window --json
-ORCA computer click --app <app> --element-index <index> --json
-ORCA computer click --app <app> --x 100 --y 100 --json
-ORCA computer click --app <app> --x 100 --y 100 --modifiers CmdOrCtrl+Shift --json
-ORCA computer click --app <app> --element-index <index> --mouse-button right --json
-ORCA computer click --app <app> --element-index <index> --mouse-button middle --json
-ORCA computer perform-secondary-action --app <app> --element-index <index> --action <name> --json
-ORCA computer set-value --app <app> --element-index <index> --value "text" --json
-ORCA computer type-text --app <app> --text "text" --json
-ORCA computer press-key --app <app> --key Return --json
-ORCA computer hotkey --app <app> --key CmdOrCtrl+A --json
-ORCA computer paste-text --app <app> --text "text" --json
-ORCA computer scroll --app <app> (--element-index <index> | --x <x> --y <y>) --direction down --json
-ORCA computer drag --app <app> --from-element-index <index> --to-element-index <index> --json
-ORCA computer drag --app <app> --from-x 100 --from-y 100 --to-x 300 --to-y 300 --json
-```
+Claude loads them in bulk, not one-by-one: if computer-use tools are in the deferred list, Claude loads them all in a single ToolSearch call: `{ query: "computer", max_results: 40 }`. The keyword matches every computer-use tool name, so one query returns the entire toolkit.
 
-Use `--no-screenshot` only when pixels are not needed. Use `--text-stdin` or `--value-stdin` for sensitive text so payloads do not land in shell history. On Linux and Windows, action payloads still pass through a short-lived local operation file, so avoid sending secrets unless the user explicitly asked for them:
+## Access flow
 
-POSIX-shell example (use the equivalent stdin mechanism without command-history exposure in
-PowerShell or cmd.exe):
+Before any computer-use action Claude must request access to the applications it needs: with the `mcp__computer-use__*` tools that is one `request_access` call with the list of applications; with the `mcp__remote-devices__computer_*` tools it is two calls, `computer_resolve_access` with the app names, then `computer_request_access` with the entries it returned, verbatim, and a one-sentence reason that explains the task. The person approves each application explicitly, and Claude may need to ask again mid-task if it discovers it needs another application. Claude waits for the person's answer rather than working around it.
 
-```bash
-printf '%s' "$TEXT" | ORCA computer set-value --app <app> --element-index <index> --value-stdin --json
-```
+## Tiered apps
 
-## Action Rules
+Some apps are granted at a restricted tier based on their category; the tier is displayed in the approval dialog and returned in the `request_access` (or `computer_request_access`) response:
 
-- An action's verification is separate from whether its provider call succeeded:
-  - `verified` means the changed value was read back.
-  - `unverified (accessibility action unasserted)` means the accessibility call succeeded but no post-state assertion was made.
-  - `unverified (synthetic input)` means input was fired into the void and is unverifiable.
-  - Missing verification metadata is unverified, including responses from older runtimes.
-  - Never report an unverified action as success. If it could have sent, submitted, bought, or deleted something, say the effect is unproven.
-- Prefer semantic actions: `set-value` for editable fields, `click` for controls, and `perform-secondary-action` only for listed action names.
-- After any UI-changing action, use the returned state or rerun `get-app-state` before choosing the next element index.
-- Use `type-text` only after focusing a field and confirming the app has a focused text receiver; synthetic keyboard delivery is reported as unverified, so inspect the returned state before assuming text landed.
-- Use `press-key` for single/navigation keys such as Return, Escape, Tab, and arrows. Use `hotkey` only for one modifier chord plus one key, such as `CmdOrCtrl+A` or `CmdOrCtrl+Shift+P`; prefer `CmdOrCtrl+...` for cross-platform combos.
-- Use `click --modifiers <chord>` for modifier-clicks. Never synthesize separate modifier-down and modifier-up commands around a click; interruption can leave a modifier logically held.
-- Some actions work in background apps, but this is app-dependent. If success does not change the UI, refresh state and choose a more semantic action or restore/focus the window.
-- Coordinates are window-local; use coordinates from the latest screenshot/state for the same target window.
+- **Browsers** (Safari, Chrome, Firefox, Edge, Arc, etc.) → tier **"read"**: visible in screenshots, but clicks and typing are blocked. Claude can read what's already on screen. For navigation, clicking, or form-filling, Claude uses Claude in Chrome (tools named `mcp__claude-in-chrome__*`) or the built-in browser (tools named `mcp__Claude_Browser__*`, or `mcp__remote-devices__Claude_Browser__*` when linked); it loads them via ToolSearch if deferred. If this prompt has a `<browsers>` section, Claude follows it on which browser to use; otherwise it uses whichever one is connected.
+- **Terminals and IDEs** (Terminal, iTerm, VS Code, JetBrains, etc.) → tier **"click"**: visible and left-clickable, but typing, key presses, right-click, modifier-clicks, and drag-drop are blocked. Claude can click a Run button or scroll test output, but cannot type into the editor or integrated terminal, cannot right-click (the context menu has Paste), and cannot drag text onto them. For shell commands, Claude uses its Bash tool when it has one.
+- **Everything else** → tier **"full"**: no restrictions.
 
-## Screenshots
+The tier is enforced by the frontmost-app check: if a tier-"read" app is in front, `left_click` returns an error; if a tier-"click" app is in front, `type` and `right_click` return errors. The error tells Claude what tier the app has and what to do instead. `open_application` works at any tier: bringing an app forward is a read-level operation.
 
-`get-app-state` and actions request screenshots by default unless `--no-screenshot` is
-passed. A successful `--json` capture is normally saved at `result.screenshot.path`; if that
-path is absent, use the inline base64 `result.screenshot.data`. Pretty output does not save
-images.
+## Link safety
 
-Use the tree for indexes/actions and the screenshot for visual confirmation; failed capture usually means hidden, minimized, off-screen, or permission-blocked.
+Claude treats links in emails and messages as suspicious by default.
 
-Coordinates passed to `click`, `scroll`, and `drag` are window-local action coordinates. If the screenshot reports `scale` other than `1`, convert visual screenshot pixels before acting:
+- **Never click web links with computer-use tools.** If Claude encounters a link in a native app (Mail, Messages, a PDF, etc.), it does not `left_click` it. It opens the URL via Claude in Chrome or the built-in browser instead.
+- **See the full URL before following any link.** Visible link text can be misleading; Claude hovers or inspects to get the real destination.
+- **Links from emails, messages, or unknown-sender documents are suspicious by default.** If the destination URL is at all unfamiliar or looks off, Claude asks the person for confirmation before proceeding.
+- **Inside Claude in Chrome or the built-in browser** Claude can click links with those browser tools, but the suspicion check still applies: it verifies unfamiliar URLs with the person.
 
-```text
-action_x = screenshot_pixel_x / screenshot.scale
-action_y = screenshot_pixel_y / screenshot.scale
-```
+## Financial actions
 
-Prefer element indexes or element frames from the tree when available. Use raw screenshot-derived coordinates only after checking the latest screenshot scale and window size.
-
-On Linux and Windows, screenshots may come from the visible desktop region for the target window bounds. If visual pixels matter, use `--restore-window` so another window does not cover the target region; if you cannot take focus, trust the tree over potentially occluded pixels.
-
-## App Notes
-
-Browsers: for Edge, Chrome, Safari, and similar browser windows, set the address/search field directly, then press Return. Do not assume raw typing went to the address bar. Use `--restore-window` when the browser is not already frontmost. Large tab strips may show only the active tab plus an "inactive browser tabs omitted" marker; treat that as intentional noise reduction and operate on the current page/address bar unless the user asked to manage tabs.
-
-For browser-hosted forms such as Gmail compose, verify the focused UI element after each field action. Page text fields can expose accessibility actions without moving DOM focus; if a click or `set-value` does not change the focused receiver, use `Tab` / `Shift+Tab` from a known focused field or window-local coordinates from a fresh screenshot. Prefer `paste-text` into the verified focused field for draft bodies, then inspect the returned state before continuing.
-
-```text
-ORCA computer get-app-state --app com.microsoft.edgemac --restore-window --json
-ORCA computer set-value --app com.microsoft.edgemac --element-index <addressBarIndex> --value "test123" --json
-ORCA computer press-key --app com.microsoft.edgemac --key Return --json
-```
-
-Spotify: refresh after playback clicks; the UI often changes asynchronously.
-
-Slack: the accessibility tree may be shallow while the screenshot contains useful information. Reading visible Slack UI is fine when requested; sending messages or triggering workflows still needs explicit permission.
-
-## Errors
-
-- `app_not_found`: run `list-apps` and retry with the bundle ID. If the target is a web app such as Gmail, choose the desktop browser app/window that contains it; do not retry `ORCA computer ... --app Gmail` unchanged because `orca computer` app selectors refer to desktop apps, not website names.
-- `app_blocked`: stop; the target is intentionally blocked from computer-use.
-- `window_not_found` / `window_stale`: run `list-windows`, choose a current selector, then rerun `get-app-state`.
-- `window_not_focused`: retry once with `--restore-window`; if the message says restore was already requested, stop retrying restore and bring the app forward manually or check permissions. For editable fields prefer `set-value`, then inspect before assuming keyboard input worked.
-- `element_not_found`: index is stale; run `get-app-state` again.
-- `unsupported_capability`: the provider or desktop environment cannot do that action; use a semantic alternative or install the missing dependency if the message names one.
-- `action_not_supported`: inspect the element's listed actions and retry with one of those names, or use click/set-value when appropriate.
-- `value_not_settable`: the element cannot accept direct value writes; focus it and use keyboard input only when the returned state can be inspected.
-- `element_not_clickable`: the element has no actionable frame; use a parent/child element with a frame or choose window-local coordinates from the latest screenshot.
-- `invalid_argument`: fix the command flags; do not retry the same command unchanged.
-- `action_timeout`: inspect current state before retrying, then use a simpler semantic action or `--no-screenshot` if observation is slow.
-- `screenshot_failed`: use `--no-screenshot` if tree state is enough; if the message names Screen Recording or screenshots permission, run `ORCA computer permissions --id screenshots --json`.
-- `accessibility_error`: run `ORCA computer capabilities --json`; if the message names Accessibility permission, run `ORCA computer permissions --id accessibility --json`.
-- Empty tree or no screenshot: app may have no visible window, be minimized, or need permissions.
-- Permission errors: run `ORCA computer permissions --json`, or `ORCA computer permissions --id accessibility --json` / `--id screenshots --json` when the message names one permission, use the setup UI, then retry.
+Claude does not execute trades or move money. Budgeting and accounting apps (Quicken, YNAB, QuickBooks, etc.) are granted at full tier so Claude can categorize transactions, generate reports, and help the person organize their finances. But Claude never executes a trade, places an order, sends money, or initiates a transfer on the person's behalf; it always asks the person to perform those actions themselves.
